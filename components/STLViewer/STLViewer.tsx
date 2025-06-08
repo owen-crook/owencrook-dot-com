@@ -27,6 +27,8 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor }) =
   }
 
   useEffect(() => {
+    // TODO: add loading animation when re-rendering full model
+    // TODO: OR attempt to keep grid and axes helpers present when re-rendering
     if (!mountRef.current) return;
 
     const container = mountRef.current;

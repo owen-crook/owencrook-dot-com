@@ -64,7 +64,7 @@ export default function ThreeDimensionalModelsPage() {
               materialColor={selectedMaterialColor}
             />
           </Grid.Col>
-          <Grid.Col span={2} style={{ height: '100%', overflowY: 'auto' }}>
+          <Grid.Col span={2} style={{ height: '100%', overflowY: 'auto' }} pr={{ base: 8, sm: 16, md: 24 }}>
             <h2>{selectedModel.label}</h2>
             <p>{modelDescription}</p>
             {/* Render URL content if it exists */}
@@ -73,12 +73,13 @@ export default function ThreeDimensionalModelsPage() {
                 <>
                   <h3>Links</h3>
                   <ul>
-                    {selectedModel.urls.map((url, index) => (<li key={index}><a href={url} target="_blank" rel="noopener noreferrer">{url}</a></li>))}
+                    {selectedModel.urls.map((url, index) => (<li key={index}><a href={url.url} target="_blank" rel="noopener noreferrer">{url.label || url.url}</a></li>))}
                   </ul>
                 </>
               ) : <></>
             }
-
+            {/* Render Photo content if it exists */}
+            {selectedModel.hasPhotos ? (<>aaaaa</>) : <></>}
           </Grid.Col>
         </Grid>
       </Box >

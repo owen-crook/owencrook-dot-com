@@ -1,0 +1,4 @@
+At Tesla I use a 2021 M1 MacBook Pro. On the left side, the device has two display capable USB-C ports, as well as the MagSafe charging port. On the right it has one additional USB-C port and a standard HDMI port. 
+At the time, I had a dual 24" monitor setup and ran two DVI:USB-C display cables from the monitor to the laptop. Any time I wanted to leave my desk, I would have to unplug all three cables and they would end up falling any which way, usually off my desk, which was quite annoying.
+I designed this print around the laptop and cables that I was using so that the cables all stayed together in a single unit, preventing them from falling away when I had to leave my desk.
+I originally printed this part in PLA, but later testing found that a semi-flexible plastic like TPU was must better for the purpose.
