@@ -7,7 +7,7 @@ import { IconCamera } from '@tabler/icons-react'
 import classes from '../../components/FloatingColorPicker/FloatingColorPicker.module.css';
 import { PhotoViewerModal } from '@/components/PhotoViewerModal/PhotoViewerModal'
 
-export default function ThreeDimensionalModelsPage() {
+export default function ThreeDimensionalModelingPage() {
   const [selectedModel, setSelectedModel] = useState<ThreeDimensionalModel>(DefaultThreeDimensionalModel)
   const [modelDescription, setModelDescription] = useState<string>('')
   const [selectedMaterialColor, setSelectedMaterialColor] = useState('#6aff00f0')
@@ -52,7 +52,7 @@ export default function ThreeDimensionalModelsPage() {
           pb={{ base: 8, sm: 16, md: 24 }}
           style={{ flex: '0 0 auto' }}
         >
-          <h1>CAD Models</h1>
+          <h1>3D Modeling</h1>
           <p>
             I've always liked building stuff and figuring out how things work, so getting into CAD and 3D printing was kind of a natural fit. I took some CAD classes back in high school, but things really clicked in college when I started building racing drones and needed custom parts. That’s when I got into 3D printing and started messing around with designs of my own.
           </p>
