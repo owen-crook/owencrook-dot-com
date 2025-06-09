@@ -1,13 +1,15 @@
-'use client'
-import { Modal, Image } from '@mantine/core';
-import { Carousel } from '@mantine/carousel'
+'use client';
+
+import { Carousel } from '@mantine/carousel';
+import { Image, Modal } from '@mantine/core';
+
 import '@mantine/carousel/styles.css';
 
 type PhotoViewerModalProps = {
   imageUrls: string[];
-  opened: boolean
+  opened: boolean;
   onClose: () => void;
-}
+};
 
 export function PhotoViewerModal({ imageUrls, opened, onClose }: PhotoViewerModalProps) {
   return (
@@ -18,19 +20,31 @@ export function PhotoViewerModal({ imageUrls, opened, onClose }: PhotoViewerModa
           height="80vh"
           withIndicators
           emblaOptions={{
-            loop: true
+            loop: true,
           }}
         >
-          {imageUrls.map((url) => ( // TODO: validate a file exists at the url before attempting to add the slide
-            <Carousel.Slide key={url} style={{
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <Image src={url} fit="contain" height="100%" style={{ maxHeight: '100%', width: 'auto', objectFit: 'contain' }} />
-            </Carousel.Slide>
-          ))}
+          {imageUrls.map(
+            (
+              url // TODO: validate a file exists at the url before attempting to add the slide
+            ) => (
+              <Carousel.Slide
+                key={url}
+                style={{
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Image
+                  src={url}
+                  fit="contain"
+                  height="100%"
+                  style={{ maxHeight: '100%', width: 'auto', objectFit: 'contain' }}
+                />
+              </Carousel.Slide>
+            )
+          )}
         </Carousel>
       </Modal>
     </div>

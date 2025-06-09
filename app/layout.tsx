@@ -1,11 +1,12 @@
-"use client"
+'use client';
+
 import '@mantine/core/styles.css';
 
 import React from 'react';
-import { mantineHtmlProps, MantineProvider, AppShell } from '@mantine/core';
+import { AppShell, mantineHtmlProps, MantineProvider } from '@mantine/core';
 import { HeaderSimple } from '@/components/HeaderSimple/HeaderSimple';
-import { theme } from '../theme';
 import { NavbarMinimal } from '@/components/NavbarMinimal/NavbarMinimal';
+import { theme } from '../theme';
 
 export default function RootLayout({ children }: { children: any }) {
   return (
@@ -19,8 +20,7 @@ export default function RootLayout({ children }: { children: any }) {
               root: { height: '100vh', overflow: 'hidden' },
               main: {
                 height: 'calc(100vh - 56px)', // subtract the header height
-
-              }
+              },
             }}
           >
             <AppShell.Header>
@@ -32,9 +32,7 @@ export default function RootLayout({ children }: { children: any }) {
               <NavbarMinimal />
             </AppShell.Navbar>
 
-            <AppShell.Main>
-              {children}
-            </AppShell.Main>
+            <AppShell.Main>{children}</AppShell.Main>
           </AppShell>
         </MantineProvider>
       </body>

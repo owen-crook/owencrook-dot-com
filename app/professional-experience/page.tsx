@@ -1,4 +1,4 @@
-import { Box } from "@mantine/core"
+import { Box } from '@mantine/core';
 
 export default function ProfessionalExperiencePage() {
   return (
@@ -13,5 +13,5 @@ export default function ProfessionalExperiencePage() {
         </Box>
       </Box>
     </>
-  )
+  );
 }

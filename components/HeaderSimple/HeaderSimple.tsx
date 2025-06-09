@@ -1,6 +1,6 @@
-import { Container, Group } from '@mantine/core';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Container, Group } from '@mantine/core';
 import classes from './HeaderSimple.module.css';
 
 const links = [
@@ -28,7 +28,6 @@ export function HeaderSimple() {
         <Group gap={5} visibleFrom="xs">
           {items}
         </Group>
-
       </Container>
     </header>
   );

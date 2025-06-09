@@ -2,13 +2,13 @@
 
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 
 type STLViewerProps = {
   modelFileName: string;
   materialColor?: string; // assuming HEX or HEXA
-}
+};
 
 const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor }) => {
   const mountRef = useRef<HTMLDivElement | null>(null);
@@ -20,11 +20,11 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor }) =
     if (!color || color.length < 7) return { hex: '#7777ff', alpha: 1 }; // default color if invalid
 
     const hex = color.slice(0, 7); // Always take the first 7 chars (#RRGGBB)
-    const alphaHex = color.length === 9 ? color.slice(7) : "ff"; // Default to fully opaque
+    const alphaHex = color.length === 9 ? color.slice(7) : 'ff'; // Default to fully opaque
     const alpha = parseInt(alphaHex, 16) / 255; // Convert hex to alpha (0-1 range)
 
     return { hex, alpha };
-  }
+  };
 
   useEffect(() => {
     // TODO: add loading animation when re-rendering full model
@@ -85,7 +85,11 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor }) =
         const scale = 50 / maxDim; // arbitrary base size, adjust as needed
         geometry.scale(scale, scale, scale);
 
-        const material = new THREE.MeshPhongMaterial({ color: hex || 0x7777ff, transparent: true, opacity: alpha });
+        const material = new THREE.MeshPhongMaterial({
+          color: hex || 0x7777ff,
+          transparent: true,
+          opacity: alpha,
+        });
         const mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
         meshRef.current = mesh;
@@ -94,7 +98,7 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor }) =
         const divisions = Math.max(10, Math.floor(gridSize / 5));
 
         const gridHelper = new THREE.GridHelper(gridSize, divisions);
-        gridHelper.position.y = -size.y * scale / 2 - 0.01; // slightly below model
+        gridHelper.position.y = (-size.y * scale) / 2 - 0.01; // slightly below model
         scene.add(gridHelper);
 
         const axesHelper = new THREE.AxesHelper(gridSize * 0.5);
@@ -102,7 +106,6 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor }) =
 
         gridHelperRef.current = gridHelper;
         axesHelperRef.current = axesHelper;
-
       },
       undefined,
       (error) => {

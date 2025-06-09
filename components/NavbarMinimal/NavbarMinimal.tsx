@@ -1,4 +1,5 @@
-"use client"
+'use client';
+
 import { useState } from 'react';
 import {
   IconCalendarStats,
@@ -55,9 +56,7 @@ export function NavbarMinimal() {
 
   return (
     <nav className={classes.navbar}>
-      <Center>
-        {/* TODO: pick a logo */}
-      </Center>
+      <Center>{/* TODO: pick a logo */}</Center>
 
       <div className={classes.navbarMain}>
         <Stack justify="center" gap={0}>
