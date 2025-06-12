@@ -25,15 +25,20 @@
     "@mantine/hooks": "8.0.2",
     "@next/bundle-analyzer": "^15.2.3",
     "@tabler/icons-react": "^3.31.0",
+    "embla-carousel": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
     "next": "15.2.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "three": "^0.177.0"
+    "three": "^0.177.0",
+    "webpack": "^5.99.9"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
     "@eslint/js": "^9.23.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.4.1",
+    "@next/eslint-plugin-next": "^15.3.3",
+    "@next/swc-wasm-nodejs": "^15.4.0",
     "@storybook/nextjs": "^8.6.8",
     "@storybook/react": "^8.6.8",
     "@testing-library/dom": "^10.4.0",

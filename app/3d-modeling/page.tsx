@@ -127,7 +127,7 @@ export default function ThreeDimensionalModelingPage() {
                 <></>
               )}
               {/* Render explore photos button if they exists */}
-              {selectedModel.numberOfPhotos || 0 > 0 ? (
+              {(selectedModel.numberOfPhotos || 0) > 0 ? (
                 <>
                   <UnstyledButton
                     className={classes.control}
@@ -137,7 +137,7 @@ export default function ThreeDimensionalModelingPage() {
                       setPhotosModalOpened(true);
                     }}
                   >
-                    <Group gap={'xs'}>
+                    <Group gap="xs">
                       <span className={classes.label}>Explore Photos</span>
                     </Group>
                     <IconCamera size={16} className={classes.label} stroke={1.5} />

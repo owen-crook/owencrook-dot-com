@@ -17,7 +17,7 @@ export function FloatingColorPicker({ color, onChange }: FloatingColorPickerProp
     <Popover
       opened={opened}
       onChange={setOpened}
-      width={'auto'}
+      width="auto"
       position="bottom-start"
       withArrow
       shadow="md"
@@ -29,7 +29,7 @@ export function FloatingColorPicker({ color, onChange }: FloatingColorPickerProp
           size="xs"
           onClick={() => setOpened((o) => !o)}
         >
-          <Group gap={'xs'}>
+          <Group gap="xs">
             <span className={classes.label}>Show Color Picker</span>
           </Group>
           <IconPalette size={16} className={classes.icon} stroke={1.5} />

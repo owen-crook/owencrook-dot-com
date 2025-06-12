@@ -17,7 +17,7 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor }) =
   const axesHelperRef = useRef<THREE.AxesHelper | null>(null);
 
   const parseMaterialColorToHexAlpha = (color: string): { hex: string; alpha: number } => {
-    if (!color || color.length < 7) return { hex: '#7777ff', alpha: 1 }; // default color if invalid
+    if (!color || color.length < 7) {return { hex: '#7777ff', alpha: 1 };} // default color if invalid
 
     const hex = color.slice(0, 7); // Always take the first 7 chars (#RRGGBB)
     const alphaHex = color.length === 9 ? color.slice(7) : 'ff'; // Default to fully opaque
@@ -29,7 +29,7 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor }) =
   useEffect(() => {
     // TODO: add loading animation when re-rendering full model
     // TODO: OR attempt to keep grid and axes helpers present when re-rendering
-    if (!mountRef.current) return;
+    if (!mountRef.current) {return;}
 
     const container = mountRef.current;
 
@@ -123,7 +123,7 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor }) =
 
     // Resize handling
     const handleResize = () => {
-      if (!container) return;
+      if (!container) {return;}
       camera.aspect = container.clientWidth / container.clientHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(container.clientWidth, container.clientHeight);
@@ -159,7 +159,7 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor }) =
 
   useEffect(() => {
     // check if HEX (color) or HEXA (color + alpha)
-    if (!materialColor || materialColor.length < 7 || !meshRef.current) return;
+    if (!materialColor || materialColor.length < 7 || !meshRef.current) {return;}
 
     const { hex, alpha } = parseMaterialColorToHexAlpha(materialColor);
 

@@ -53,7 +53,7 @@ export default function HomePage() {
             </Button>
           </Group>
         </div>
-        <Image src={'avatar.png'} className="image" />
+        <Image src="avatar.png" className="image" />
       </div>
     </Container>
   );
