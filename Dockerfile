@@ -9,14 +9,16 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
+COPY package.json ./
 COPY yarn.lock ./
-RUN corepack enable && yarn config set registry https://registry.yarnpkg.com && yarn install --frozen-lockfile
+COPY .yarn .yarn
+COPY .yarnrc.yml ./
+RUN corepack enable && yarn install --frozen-lockfile
 RUN ls -la /app && ls -la /app/node_modules
 
 # Rebuild the source code only when needed
 FROM node:18-bullseye AS builder
 WORKDIR /app
-COPY --from=deps /app /deps_app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
