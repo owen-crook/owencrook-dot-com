@@ -1,5 +1,4 @@
 import { Box } from '@mantine/core';
-import AuthButtons from '@/components/AuthButtons/AuthButtons';
 
 export default function ProfessionalExperiencePage() {
   return (
@@ -11,7 +10,6 @@ export default function ProfessionalExperiencePage() {
           style={{ flex: '0 0 auto' }}
         >
           <h1>Professional Experience</h1>
-          <AuthButtons />
         </Box>
       </Box>
     </>

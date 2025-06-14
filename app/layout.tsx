@@ -5,7 +5,7 @@ import '@mantine/core/styles.css';
 import React from 'react';
 import { SessionProvider } from "next-auth/react";
 import { AppShell, mantineHtmlProps, MantineProvider } from '@mantine/core';
-import { HeaderSimple } from '@/components/HeaderSimple/HeaderSimple';
+import { Header } from '@/components/Header/Header';
 import { NavbarMinimal } from '@/components/NavbarMinimal/NavbarMinimal';
 import { theme } from '../theme';
 
@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: any }) {
             >
               <AppShell.Header>
                 <link rel="shortcut icon" href="/avatar.png" />
-                <HeaderSimple />
+                <Header />
               </AppShell.Header>
 
               <AppShell.Navbar>
