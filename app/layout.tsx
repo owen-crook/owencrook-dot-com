@@ -3,7 +3,7 @@
 import '@mantine/core/styles.css';
 
 import React from 'react';
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider } from 'next-auth/react';
 import { AppShell, mantineHtmlProps, MantineProvider } from '@mantine/core';
 import { Header } from '@/components/Header/Header';
 import { NavbarMinimal } from '@/components/NavbarMinimal/NavbarMinimal';

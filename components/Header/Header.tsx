@@ -1,17 +1,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { signIn, signOut, useSession } from 'next-auth/react';
-import {
-  Container,
-  Group,
-  Menu,
-  Burger,
-  Center,
-  Avatar,
-  ActionIcon,
-  Tooltip,
-} from '@mantine/core';
 import { IconChevronDown, IconUser } from '@tabler/icons-react';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import { ActionIcon, Avatar, Burger, Center, Container, Group, Menu, Tooltip } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from './Header.module.css';
 
@@ -19,21 +10,21 @@ const links = [
   { link: '/', label: 'Home' },
   { link: '/professional-experience', label: 'Professional Experience' },
   {
-    link: '/hobbies', label: 'Hobbies', links: [
-      { link: '/3d-modeling', label: '3D Modeling' },
-    ]
+    link: '/hobbies',
+    label: 'Hobbies',
+    links: [{ link: '/3d-modeling', label: '3D Modeling' }],
   },
   {
-    link: '/tools', label: 'Tools', links: [
-      { link: '/board-game-tracker', label: 'Board Game Tracker' },
-    ]
+    link: '/tools',
+    label: 'Tools',
+    links: [{ link: '/board-game-tracker', label: 'Board Game Tracker' }],
   },
 ];
 
 export function Header() {
   const [opened, { toggle }] = useDisclosure(false);
   const pathname = usePathname();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   const items = links.map((link) => {
     const menuItems = link.links?.map((item) => (
