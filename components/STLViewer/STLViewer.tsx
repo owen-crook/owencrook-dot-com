@@ -1,9 +1,10 @@
 'use client';
+
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Loader, Center } from '@mantine/core';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
+import { Center, Loader } from '@mantine/core';
 
 type STLViewerProps = {
   modelFileName: string;
@@ -134,7 +135,7 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor, mod
 
         gridHelperRef.current = gridHelper;
         axesHelperRef.current = axesHelper;
-        setModelLoaded(true)
+        setModelLoaded(true);
       },
       undefined,
       (error) => {
@@ -163,7 +164,7 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor, mod
 
     // Cleanup on unmount
     return () => {
-      clearTimeout(minTimeTimer)
+      clearTimeout(minTimeTimer);
       window.removeEventListener('resize', handleResize);
       controls.dispose();
       renderer.dispose();
@@ -212,7 +213,7 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor, mod
   }, [modelLoaded, minTimeElapsed]);
 
   return (
-    <div style={{ width: '100%', height: '100%', position: 'relative' }} >
+    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       {loading && (
         <Center
           style={{
@@ -223,13 +224,14 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor, mod
             bottom: 0,
             zIndex: 10, // Ensure loader is above the canvas
             backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent overlay
-          }}>
+          }}
+        >
           <Loader type="dots" />
         </Center>
       )}
       <div ref={mountRef} style={{ width: '100%', height: '100%', position: 'relative' }} />
     </div>
-  )
+  );
 };
 
 export default STLViewer;
