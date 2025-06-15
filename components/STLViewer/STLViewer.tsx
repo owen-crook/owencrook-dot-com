@@ -1,20 +1,27 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
+import { Center, Loader } from '@mantine/core';
 
 type STLViewerProps = {
   modelFileName: string;
   materialColor?: string; // assuming HEX or HEXA
+  modelRoation?: { x: number; y: number; z: number }; // optional rotation values for orientations
 };
 
-const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor }) => {
+const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor, modelRoation }) => {
+  const [loading, setLoading] = useState(true);
+  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
+  const [modelLoaded, setModelLoaded] = useState(false);
   const mountRef = useRef<HTMLDivElement | null>(null);
   const meshRef = useRef<THREE.Mesh | null>(null);
   const gridHelperRef = useRef<THREE.GridHelper | null>(null);
   const axesHelperRef = useRef<THREE.AxesHelper | null>(null);
+
+  const MIN_LOAD_TIME = 500; // 0.5 seconds in milliseconds
 
   const parseMaterialColorToHexAlpha = (color: string): { hex: string; alpha: number } => {
     if (!color || color.length < 7) {
@@ -29,11 +36,17 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor }) =
   };
 
   useEffect(() => {
-    // TODO: add loading animation when re-rendering full model
-    // TODO: OR attempt to keep grid and axes helpers present when re-rendering
     if (!mountRef.current) {
       return;
     }
+
+    setLoading(true);
+    setMinTimeElapsed(false);
+    setModelLoaded(false);
+
+    const minTimeTimer = setTimeout(() => {
+      setMinTimeElapsed(true);
+    }, MIN_LOAD_TIME);
 
     const container = mountRef.current;
 
@@ -95,6 +108,15 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor }) =
           opacity: alpha,
         });
         const mesh = new THREE.Mesh(geometry, material);
+
+        // rotate model orientation if provided
+        if (modelRoation) {
+          mesh.rotation.set(
+            (modelRoation.x * Math.PI) / 180,
+            (modelRoation.y * Math.PI) / 180,
+            (modelRoation.z * Math.PI) / 180
+          );
+        }
         scene.add(mesh);
         meshRef.current = mesh;
 
@@ -102,7 +124,10 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor }) =
         const divisions = Math.max(10, Math.floor(gridSize / 5));
 
         const gridHelper = new THREE.GridHelper(gridSize, divisions);
-        gridHelper.position.y = (-size.y * scale) / 2 - 0.01; // slightly below model
+        const meshBoundingBox = new THREE.Box3().setFromObject(mesh);
+        const lowestY = meshBoundingBox.min.y;
+
+        gridHelper.position.y = lowestY - 0.01; // slightly below model
         scene.add(gridHelper);
 
         const axesHelper = new THREE.AxesHelper(gridSize * 0.5);
@@ -110,6 +135,7 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor }) =
 
         gridHelperRef.current = gridHelper;
         axesHelperRef.current = axesHelper;
+        setModelLoaded(true);
       },
       undefined,
       (error) => {
@@ -138,6 +164,7 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor }) =
 
     // Cleanup on unmount
     return () => {
+      clearTimeout(minTimeTimer);
       window.removeEventListener('resize', handleResize);
       controls.dispose();
       renderer.dispose();
@@ -177,7 +204,34 @@ const STLViewer: React.FC<STLViewerProps> = ({ modelFileName, materialColor }) =
     }
   }, [materialColor]);
 
-  return <div ref={mountRef} style={{ width: '100%', height: '100%', position: 'relative' }} />;
+  useEffect(() => {
+    // when both the model has loaded and users have been on the page
+    // for 0.5 seconds
+    if (modelLoaded && minTimeElapsed) {
+      setLoading(false);
+    }
+  }, [modelLoaded, minTimeElapsed]);
+
+  return (
+    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+      {loading && (
+        <Center
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 10, // Ensure loader is above the canvas
+            backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent overlay
+          }}
+        >
+          <Loader type="dots" />
+        </Center>
+      )}
+      <div ref={mountRef} style={{ width: '100%', height: '100%', position: 'relative' }} />
+    </div>
+  );
 };
 
 export default STLViewer;
