@@ -100,7 +100,11 @@ export default function ThreeDimensionalModelingPage() {
                 height: '100%',
               }}
             >
-              <STLViewer modelFileName={selectedModel.file} materialColor={selectedMaterialColor} />
+              <STLViewer
+                modelFileName={selectedModel.file}
+                materialColor={selectedMaterialColor}
+                modelRoation={selectedModel.rotation}
+              />
             </Grid.Col>
             <Grid.Col
               span={2}

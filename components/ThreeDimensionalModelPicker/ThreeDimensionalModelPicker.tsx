@@ -16,12 +16,14 @@ export type ThreeDimensionalModel = {
   file: string;
   urls?: ThreeDimensionalModelUrl[];
   numberOfPhotos?: number; // Number of photos associated with the model
+  rotation?: { x: number; y: number; z: number }; // Optional rotation values for orientations
 };
 
 export const DefaultThreeDimensionalModel: ThreeDimensionalModel = {
   label: 'Benchy',
   file: 'benchy',
   urls: [{ url: 'https://www.3dbenchy.com/about/', label: 'www.3dbenchy.com' }],
+  rotation: { x: -90, y: 0, z: 0 }, // Default rotation values
 };
 
 const modelData: ThreeDimensionalModel[] = [
@@ -40,6 +42,7 @@ const modelData: ThreeDimensionalModel[] = [
         label: 'Mint 10 Snorlax',
       },
     ],
+    rotation: { x: -90, y: 0, z: 0 }, // Default rotation values
   },
   {
     label: 'MacBook Pro Cable Holder',
