@@ -28,7 +28,7 @@ export function Header() {
 
   const items = links.map((link) => {
     const menuItems = link.links?.map((item) => (
-      <Menu.Item>
+      <Menu.Item key={item.label}>
         <Link
           key={item.label}
           href={item.link}
