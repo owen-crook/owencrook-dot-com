@@ -43,8 +43,9 @@ export default function BoardGameTrackerUploadForm() {
       formData.append('date', dayjs(date).format('YYYY-MM-DD'));
       formData.append('image', file);
 
+      // TODO: find a way to make this env dynamic
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/board-game-tracker/parse-score-card/${game}`,
+        `https://api.owencrook.com/api/v1/board-game-tracker/parse-score-card/${game}`,
         {
           method: 'POST',
           headers: {
