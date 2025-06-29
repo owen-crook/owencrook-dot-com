@@ -25,7 +25,6 @@ export default function BoardGameTrackerUploadForm() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!file || !date || !selectedGame) {
-      alert('Missing required fields.');
       return;
     }
 
@@ -35,7 +34,6 @@ export default function BoardGameTrackerUploadForm() {
       const token = (session as { idToken?: string })?.idToken;
 
       if (!token) {
-        alert('User is not authenticated.');
         return;
       }
 

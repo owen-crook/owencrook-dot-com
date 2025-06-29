@@ -13,6 +13,9 @@ export default async function BoardGameTrackerPage() {
 
   const adminEmails = process.env.ADMIN_EMAILS?.split(',') ?? [];
   const isAdmin = adminEmails.includes(session.user.email);
+  if (!isAdmin) {
+    redirect('/');
+  }
 
   return (
     <>
