@@ -49,7 +49,7 @@ export default function BoardGameTrackerUploadForm() {
         {
           method: 'POST',
           headers: {
-            Authorization: `Bearer ${token}`, // 🔐 secure your Go API with this
+            Authorization: `Bearer ${token}`,
           },
           body: formData,
         }
@@ -58,7 +58,6 @@ export default function BoardGameTrackerUploadForm() {
       if (response.ok) {
         const data = await response.json();
         setParsedResult(data); // Store the successful data
-        console.log(data);
       } else {
         const err = await response.json();
         const errorMessage = `Error: ${err.error || 'Unknown'}`;
