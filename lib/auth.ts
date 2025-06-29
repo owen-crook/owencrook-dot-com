@@ -1,5 +1,5 @@
-import {jwtDecode} from 'jwt-decode';
-import {NextAuthOptions} from 'next-auth';
+import { jwtDecode } from 'jwt-decode';
+import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 
 interface DecodedIdToken {
@@ -12,7 +12,7 @@ async function refreshAccessToken(token: any) {
 
     const res = await fetch(url, {
       method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
         client_id: process.env.GOOGLE_CLIENT_ID!,
         client_secret: process.env.GOOGLE_CLIENT_SECRET!,
@@ -56,7 +56,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({token, account}) {
+    async jwt({ token, account }) {
       if (account) {
         return {
           ...token,
@@ -83,7 +83,7 @@ export const authOptions: NextAuthOptions = {
       return await refreshAccessToken(token);
     },
 
-    async session({session, token}) {
+    async session({ session, token }) {
       session.idToken = token.id_token as string;
       return session;
     },
