@@ -1,6 +1,6 @@
 export type ThreeDimensionalModelUrl = {
-  url: string;
-  label?: string;
+  url: string; label: string;
+  description?: string
 };
 
 export type ThreeDimensionalModel = {

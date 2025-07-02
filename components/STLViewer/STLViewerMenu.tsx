@@ -94,8 +94,10 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedMateria
 
   return (
     <div style={{
-      position: 'absolute', top: '1rem', left: '1rem', zIndex: 1000, backgroundColor: 'rgba(255,0,0,0.1)',
-      border: '1px solid red'
+      position: 'absolute',
+      top: '1rem',
+      left: '1rem',
+      zIndex: 1000
     }}>
       <Group gap="xs" align="center" style={{ alignItems: 'center' }}>
         {/* Main Menu Button */}
@@ -125,6 +127,8 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedMateria
             alignItems: 'center'
           }}>
             <Group gap="xs">
+              {/* TODO: general info icon with welcome page to trigger modal */}
+
               {/* Model Selector */}
               <Popover
                 opened={showModelPicker}
@@ -206,38 +210,44 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedMateria
               </Tooltip>
 
               {/*TODO: remap Links Menu */}
-              <Menu
-                opened={showLinksMenu}
-                onClose={() => setShowLinksMenu(false)}
-                position="bottom"
-                withArrow
-              >
-                <Menu.Target>
-                  <Tooltip label="Show links">
-                    <ActionIcon
-                      variant="subtle"
-                      onClick={() => setShowLinksMenu(!showLinksMenu)}
-                    >
-                      <IconExternalLink size={16} />
-                    </ActionIcon>
-                  </Tooltip>
-                </Menu.Target>
-                <Menu.Dropdown>
-                  <Menu.Label>Quick Links</Menu.Label>
-                  {sampleLinks.map((link, index) => (
-                    <Menu.Item
-                      key={index}
-                      leftSection={<IconExternalLink size={14} />}
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <div>
-                        <Text size="sm">{link.title}</Text>
-                        <Text size="xs" c="dimmed">{link.description}</Text>
-                      </div>
-                    </Menu.Item>
-                  ))}
-                </Menu.Dropdown>
-              </Menu>
+
+
+              {
+                selectedModel.urls && (
+                  <Menu
+                    opened={showLinksMenu}
+                    onClose={() => setShowLinksMenu(false)}
+                    position="bottom"
+                    withArrow
+                  >
+                    <Menu.Target>
+                      <Tooltip label="Show links">
+                        <ActionIcon
+                          variant="subtle"
+                          onClick={() => setShowLinksMenu(!showLinksMenu)}
+                        >
+                          <IconExternalLink size={16} />
+                        </ActionIcon>
+                      </Tooltip>
+                    </Menu.Target>
+                    <Menu.Dropdown>
+                      <Menu.Label>Quick Links</Menu.Label>
+                      {selectedModel.urls.map((link, index) => (
+                        <Menu.Item
+                          key={index}
+                          leftSection={<IconExternalLink size={14} />}
+                          onClick={(e) => e.preventDefault()} // TODO: make this actually open a new url
+                        >
+                          <div>
+                            <Text size="sm">{link.label}</Text>
+                            <Text size="xs" c="dimmed">{link.description}</Text>
+                          </div>
+                        </Menu.Item>
+                      ))}
+                    </Menu.Dropdown>
+                  </Menu>
+                )
+              }
             </Group>
           </Paper>
         )}
@@ -303,7 +313,7 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedMateria
         </Grid>
       </Modal>
 
-      {/* Instructions */}
+      {/* TODO: change instructions to a more welcome message and position correctly*/}
       {showInstructions && (
         <Paper
           shadow="md"
