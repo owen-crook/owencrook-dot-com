@@ -5,13 +5,13 @@ import { Image, Modal } from '@mantine/core';
 
 import '@mantine/carousel/styles.css';
 
-type PhotoViewerModalProps = {
+type STlViewerPhotoModalProps = {
   imageUrls: string[];
   opened: boolean;
   onClose: () => void;
 };
 
-export function PhotoViewerModal({ imageUrls, opened, onClose }: PhotoViewerModalProps) {
+export function STlViewerPhotoModal({ imageUrls, opened, onClose }: STlViewerPhotoModalProps) {
   return (
     <div>
       <Modal opened={opened} onClose={onClose} size="auto" centered title="Photos">
@@ -31,6 +31,7 @@ export function PhotoViewerModal({ imageUrls, opened, onClose }: PhotoViewerModa
                 key={url}
                 style={{
                   height: '100%',
+                  width: '100%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -40,7 +41,6 @@ export function PhotoViewerModal({ imageUrls, opened, onClose }: PhotoViewerModa
                   src={url}
                   fit="contain"
                   height="100%"
-                  style={{ maxHeight: '100%', width: 'auto', objectFit: 'contain' }}
                 />
               </Carousel.Slide>
             )

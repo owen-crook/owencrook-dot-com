@@ -5,13 +5,9 @@ import {
   Group,
   Popover,
   ColorPicker,
-  Modal,
-  Drawer,
   Menu,
   Text,
   Stack,
-  Grid,
-  Image,
   List,
   Paper,
   Select,
@@ -22,6 +18,7 @@ import {
 } from '@mantine/core';
 import {
   IconChevronDown,
+  IconInfoCircle,
   IconPalette,
   IconFileText,
   IconCamera,
@@ -31,26 +28,28 @@ import {
 
 import { ThreeDimensionalModel } from './types';
 import { modelData } from './constants'
+import { STlViewerPhotoModal } from './STLViewerPhotoModal';
 
 
 type STLViewerMenuProps = {
   selectedModel: ThreeDimensionalModel
   selectedModelDescription: string
+  selectedModelPhotoUrls: Array<string>
   setSelectedModel: (model: ThreeDimensionalModel) => void
   selectedMaterialColor: string
   setSelectedMaterialColor: (color: string) => void
 }
 
-export function STLViewerMenu({ selectedModel, setSelectedModel, selectedModelDescription, selectedMaterialColor, setSelectedMaterialColor }: STLViewerMenuProps) {
+export function STLViewerMenu({ selectedModel, setSelectedModel, selectedModelDescription, selectedModelPhotoUrls, selectedMaterialColor, setSelectedMaterialColor }: STLViewerMenuProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const [showModelPicker, setShowModelPicker] = useState(false)
-
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showDescriptionPanel, setShowDescriptionPanel] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [showLinksMenu, setShowLinksMenu] = useState(false);
   const [showInstructions, setShowInstructions] = useState(true);
+  const [showInfo, setShowInfo] = useState(true)
 
   // Sample data
   const samplePhotos = [
@@ -83,6 +82,11 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedModelDe
     }
   }
 
+  const handleClickShowPhotos = () => {
+    setIsExpanded(!isExpanded)
+    setShowPhotoModal(!showPhotoModal)
+  }
+
   const toggleMenu = () => {
     setIsExpanded(!isExpanded);
     if (isExpanded) {
@@ -100,6 +104,56 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedModelDe
       zIndex: 1000
     }}>
       <Group gap="xs" align="center" style={{ alignItems: 'center' }}>
+
+        {/* Info Button */}
+        <Popover
+          opened={showInfo}
+          onClose={() => setShowInfo(false)}
+          onDismiss={() => setShowInfo(false)}
+          position='bottom-start'
+          withArrow
+          width={300}
+        >
+          <Popover.Target>
+            <Tooltip label={showInfo ? "Hide info" : "Show info"}>
+              <ActionIcon
+                variant="subtle"
+                size="md"
+                radius="md"
+                onClick={() => setShowInfo(!showInfo)}
+                style={{
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                }}
+              >
+                <IconInfoCircle size={16} />
+              </ActionIcon>
+            </Tooltip>
+          </Popover.Target>
+          <Popover.Dropdown>
+            <Stack gap="sm">
+              <Text size="sm" fw={500}>3D Modeling</Text>
+              <Text size="xs" c="dimmed">
+                Welcome to my 3D Model explorer! This page is built with ThreeJS to highlight models that
+                I designed myself! Feel free to expand the menu to browse and learn about the various models
+                that I've made!
+              </Text>
+              <Text size="xs" c="dimmed">
+                I've always liked building stuff and figuring out how things work, so getting into CAD
+                and 3D printing was kind of a natural fit for me. I took some CAD classes back in high school,
+                but things really clicked in college when I started building racing drones and needed
+                custom parts. That's when I got into 3D printing and started messing around with designs
+                of my own.
+              </Text>
+              <Text size="xs" c="dimmed">
+                These days, I use my Ender 3 S1 along with OnShape for design and Cura for slicing. Most
+                of what I make is just random stuff to solve small everyday problems—organizers, mounts,
+                quick fixes, that kind of thing. It's not something I do for work, but it's a fun way to
+                scratch the engineering itch and build things that are actually useful.
+              </Text>
+            </Stack>
+          </Popover.Dropdown>
+        </Popover>
+
         {/* Main Menu Button */}
         <Tooltip label={isExpanded ? "Collapse menu" : "Expand menu"}>
           <ActionIcon
@@ -127,8 +181,6 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedModelDe
             alignItems: 'center'
           }}>
             <Group gap="xs">
-              {/* TODO: general info icon with welcome page to trigger modal */}
-
               {/* Model Selector */}
               <Popover
                 opened={showModelPicker}
@@ -161,7 +213,6 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedModelDe
                   </Stack>
                 </PopoverDropdown>
               </Popover>
-
 
               {/* Color Picker */}
               <Popover
@@ -217,17 +268,19 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedModelDe
                 </Popover.Dropdown>
               </Popover>
 
-
               {/* Photos Modal */}
-              <Tooltip label="View photos">
-                <ActionIcon
-                  variant="subtle"
-                  onClick={() => setShowPhotoModal(true)}
-                >
-                  <IconCamera size={16} />
-                </ActionIcon>
-              </Tooltip>
-
+              {
+                selectedModelPhotoUrls.length > 0 && (
+                  <Tooltip label="View photos">
+                    <ActionIcon
+                      variant="subtle"
+                      onClick={handleClickShowPhotos}
+                    >
+                      <IconCamera size={16} />
+                    </ActionIcon>
+                  </Tooltip>
+                )
+              }
               {
                 selectedModel.urls && (
                   <Menu
@@ -269,58 +322,13 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedModelDe
         )}
       </Group>
 
-      {/* TODO: remap Photo Modal */}
-      <Modal
+      <STlViewerPhotoModal
+        imageUrls={selectedModelPhotoUrls}
         opened={showPhotoModal}
-        onClose={() => setShowPhotoModal(false)}
-        title="3D Model Photos"
-        size="lg"
-        centered
-      >
-        <Grid>
-          {samplePhotos.map((photo, index) => (
-            <Grid.Col key={index} span={6}>
-              <Image
-                src={photo}
-                alt={`3D Model Photo ${index + 1}`}
-                radius="md"
-                style={{ cursor: 'pointer' }}
-              />
-            </Grid.Col>
-          ))}
-        </Grid>
-      </Modal>
-
-      {/* TODO: change instructions to a more welcome message and position correctly*/}
-      {showInstructions && (
-        <Paper
-          shadow="md"
-          p="sm"
-          radius="md"
-          style={{
-            position: 'fixed',
-            bottom: '1rem',
-            right: '1rem',
-            maxWidth: '280px',
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(8px)'
-          }}
-        >
-          <Group justify="space-between" mb="xs">
-            <Text fw={600} size="sm">Try the Menu!</Text>
-            <CloseButton size="sm" onClick={() => setShowInstructions(false)} />
-          </Group>
-          <Text size="xs" c="dimmed" mb="xs">
-            Click the menu button in the top-left corner:
-          </Text>
-          <List size="xs" spacing="xs">
-            <List.Item>🎨 Color picker with presets</List.Item>
-            <List.Item>📄 Description panel</List.Item>
-            <List.Item>📷 Photo modal</List.Item>
-            <List.Item>🔗 Links dropdown</List.Item>
-          </List>
-        </Paper>
-      )}
+        onClose={() => {
+          setShowPhotoModal(false);
+        }}
+      />
     </div>
   )
 }

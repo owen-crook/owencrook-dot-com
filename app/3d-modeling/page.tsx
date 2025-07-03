@@ -1,8 +1,5 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { IconCamera } from '@tabler/icons-react';
-import { Box, Grid, Group, UnstyledButton } from '@mantine/core';
-import { PhotoViewerModal } from '@/components/PhotoViewerModal/PhotoViewerModal';
 import STLViewer from '../../components/STLViewer/STLViewer';
 import { STLViewerMenu } from '@/components/STLViewer/STLViewerMenu';
 import { ThreeDimensionalModel } from '@/components/STLViewer/types';
@@ -15,7 +12,6 @@ export default function ThreeDimensionalModelingPage() {
   );
   const [modelDescription, setModelDescription] = useState<string>('');
   const [selectedMaterialColor, setSelectedMaterialColor] = useState('#6aff00f0');
-  const [photosModalOpened, setPhotosModalOpened] = useState(false);
   const [photoFilePaths, setPhotoFilePaths] = useState<string[]>([]);
 
   // Handle state related to the model
@@ -66,84 +62,18 @@ export default function ThreeDimensionalModelingPage() {
           selectedMaterialColor={selectedMaterialColor}
           setSelectedMaterialColor={setSelectedMaterialColor}
           selectedModelDescription={modelDescription}
+          selectedModelPhotoUrls={photoFilePaths}
         />
       </div>
 
       <div style={{
-        border: '1px solid green',
         width: '100%',
         height: '100%'
       }}>
-        <Box style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-          <Box style={{ flex: '1' }}>
-            <Grid style={{ display: 'flex', height: '100%' }}>
-              <Grid.Col
-                span={10}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  height: '100%',
-                }}
-              >
-                <STLViewer
-                  modelFileName={selectedModel.file}
-                  materialColor={selectedMaterialColor}
-                  modelRoation={selectedModel.rotation}
-                />
-              </Grid.Col>
-              <Grid.Col
-                span={2}
-                style={{ height: '100%', overflowY: 'auto' }}
-                pr={{ base: 8, sm: 16, md: 24 }}
-              >
-                <h2>{selectedModel.label}</h2>
-                <p>{modelDescription}</p>
-                {/* Render URL content if it exists */}
-                {selectedModel.urls ? (
-                  <>
-                    <h3>Links</h3>
-                    <ul>
-                      {selectedModel.urls.map((url, index) => (
-                        <li key={index}>
-                          <a href={url.url} target="_blank" rel="noopener noreferrer">
-                            {url.label || url.url}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                ) : (
-                  <></>
-                )}
-                {/* Render explore photos button if they exists */}
-                {(selectedModel.numberOfPhotos || 0) > 0 ? (
-                  <>
-                    <UnstyledButton
-                      variant="light"
-                      size="xs"
-                      onClick={() => {
-                        setPhotosModalOpened(true);
-                      }}
-                    >
-                      <Group gap="xs">
-                        <span>Explore Photos</span>
-                      </Group>
-                      <IconCamera size={16} stroke={1.5} />
-                    </UnstyledButton>
-                  </>
-                ) : (
-                  <></>
-                )}
-              </Grid.Col>
-            </Grid>
-          </Box>
-        </Box >
-        <PhotoViewerModal
-          imageUrls={photoFilePaths}
-          opened={photosModalOpened}
-          onClose={() => {
-            setPhotosModalOpened(false);
-          }}
+        <STLViewer
+          modelFileName={selectedModel.file}
+          materialColor={selectedMaterialColor}
+          modelRoation={selectedModel.rotation}
         />
       </div>
     </div>
