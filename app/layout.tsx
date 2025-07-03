@@ -34,7 +34,7 @@ export default function RootLayout({ children }: { children: any }) {
                 <NavbarMinimal />
               </AppShell.Navbar>
 
-              <AppShell.Main>{children}</AppShell.Main>
+              <AppShell.Main style={{ position: 'relative' }}>{children}</AppShell.Main>
             </AppShell>
           </MantineProvider>
         </SessionProvider>
