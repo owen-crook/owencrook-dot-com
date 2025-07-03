@@ -12,10 +12,8 @@ import {
 } from '@tabler/icons-react';
 import {
   ActionIcon,
-  CloseButton,
   ColorPicker,
   Group,
-  List,
   Menu,
   Paper,
   Popover,
@@ -54,23 +52,7 @@ export function STLViewerMenu({
   const [showDescriptionPanel, setShowDescriptionPanel] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [showLinksMenu, setShowLinksMenu] = useState(false);
-  const [showInstructions, setShowInstructions] = useState(true);
   const [showInfo, setShowInfo] = useState(true);
-
-  // Sample data
-  const samplePhotos = [
-    'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=400&h=300&fit=crop',
-    'https://images.unsplash.com/photo-1565008447742-97f6f38c985c?w=400&h=300&fit=crop',
-    'https://images.unsplash.com/photo-1617469767053-d3b523a0b982?w=400&h=300&fit=crop',
-    'https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=400&h=300&fit=crop',
-  ];
-
-  const sampleLinks = [
-    { title: 'Documentation', url: '#', description: 'Technical specifications' },
-    { title: 'Download STL', url: '#', description: 'Get the 3D model file' },
-    { title: 'Related Models', url: '#', description: 'Similar designs' },
-    { title: 'Designer Profile', url: '#', description: "View creator's work" },
-  ];
 
   const modelDataAsSelectOptions = modelData.map((model) => {
     return { value: model.file, label: model.label };
@@ -82,7 +64,7 @@ export function STLViewerMenu({
 
   const handleChangeSelectedModel = (model: string) => {
     setShowModelPicker(false);
-    var m = getThreeDimensionalModelByFile(model);
+    const m = getThreeDimensionalModelByFile(model);
     if (m) {
       setSelectedModel(m);
     }
