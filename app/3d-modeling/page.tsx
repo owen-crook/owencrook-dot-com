@@ -1,10 +1,10 @@
 'use client';
+
 import { useEffect, useState } from 'react';
-import STLViewer from '../../components/STLViewer/STLViewer';
+import { DefaultThreeDimensionalModel } from '@/components/STLViewer/constants';
 import { STLViewerMenu } from '@/components/STLViewer/STLViewerMenu';
 import { ThreeDimensionalModel } from '@/components/STLViewer/types';
-import { DefaultThreeDimensionalModel } from '@/components/STLViewer/constants';
-
+import STLViewer from '../../components/STLViewer/STLViewer';
 
 export default function ThreeDimensionalModelingPage() {
   const [selectedModel, setSelectedModel] = useState<ThreeDimensionalModel>(
@@ -45,16 +45,18 @@ export default function ThreeDimensionalModelingPage() {
   }, [selectedModel]);
 
   return (
-    <div style={{
-      position: "relative",
-      width: '100%',
-      height: '100%',
-    }}>
-
-      <div style={{
-        zIndex: 1000,
-        backgroundColor: 'rgba(255,0,0,0.1)',
+    <div
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
       }}
+    >
+      <div
+        style={{
+          zIndex: 1000,
+          backgroundColor: 'rgba(255,0,0,0.1)',
+        }}
       >
         <STLViewerMenu
           selectedModel={selectedModel}
@@ -66,10 +68,12 @@ export default function ThreeDimensionalModelingPage() {
         />
       </div>
 
-      <div style={{
-        width: '100%',
-        height: '100%'
-      }}>
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+      >
         <STLViewer
           modelFileName={selectedModel.file}
           materialColor={selectedMaterialColor}

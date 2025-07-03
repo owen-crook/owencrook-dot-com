@@ -37,11 +37,7 @@ export function STlViewerPhotoModal({ imageUrls, opened, onClose }: STlViewerPho
                   justifyContent: 'center',
                 }}
               >
-                <Image
-                  src={url}
-                  fit="contain"
-                  height="100%"
-                />
+                <Image src={url} fit="contain" height="100%" />
               </Carousel.Slide>
             )
           )}

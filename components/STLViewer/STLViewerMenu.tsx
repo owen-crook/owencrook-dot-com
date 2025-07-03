@@ -1,121 +1,128 @@
-"use client"
+'use client';
+
 import React, { useState } from 'react';
 import {
-  ActionIcon,
-  Group,
-  Popover,
-  ColorPicker,
-  Menu,
-  Text,
-  Stack,
-  List,
-  Paper,
-  Select,
-  CloseButton,
-  Tooltip,
-  PopoverTarget,
-  PopoverDropdown,
-} from '@mantine/core';
-import {
+  IconCamera,
   IconChevronDown,
+  IconCube,
+  IconExternalLink,
+  IconFileText,
   IconInfoCircle,
   IconPalette,
-  IconFileText,
-  IconCamera,
-  IconExternalLink,
-  IconCube
 } from '@tabler/icons-react';
-
-import { ThreeDimensionalModel } from './types';
-import { modelData } from './constants'
+import {
+  ActionIcon,
+  CloseButton,
+  ColorPicker,
+  Group,
+  List,
+  Menu,
+  Paper,
+  Popover,
+  PopoverDropdown,
+  PopoverTarget,
+  Select,
+  Stack,
+  Text,
+  Tooltip,
+} from '@mantine/core';
+import { modelData } from './constants';
 import { STlViewerPhotoModal } from './STLViewerPhotoModal';
-
+import { ThreeDimensionalModel } from './types';
 
 type STLViewerMenuProps = {
-  selectedModel: ThreeDimensionalModel
-  selectedModelDescription: string
-  selectedModelPhotoUrls: Array<string>
-  setSelectedModel: (model: ThreeDimensionalModel) => void
-  selectedMaterialColor: string
-  setSelectedMaterialColor: (color: string) => void
-}
+  selectedModel: ThreeDimensionalModel;
+  selectedModelDescription: string;
+  selectedModelPhotoUrls: Array<string>;
+  setSelectedModel: (model: ThreeDimensionalModel) => void;
+  selectedMaterialColor: string;
+  setSelectedMaterialColor: (color: string) => void;
+};
 
-export function STLViewerMenu({ selectedModel, setSelectedModel, selectedModelDescription, selectedModelPhotoUrls, selectedMaterialColor, setSelectedMaterialColor }: STLViewerMenuProps) {
+export function STLViewerMenu({
+  selectedModel,
+  setSelectedModel,
+  selectedModelDescription,
+  selectedModelPhotoUrls,
+  selectedMaterialColor,
+  setSelectedMaterialColor,
+}: STLViewerMenuProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const [showModelPicker, setShowModelPicker] = useState(false)
+  const [showModelPicker, setShowModelPicker] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showDescriptionPanel, setShowDescriptionPanel] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [showLinksMenu, setShowLinksMenu] = useState(false);
   const [showInstructions, setShowInstructions] = useState(true);
-  const [showInfo, setShowInfo] = useState(true)
+  const [showInfo, setShowInfo] = useState(true);
 
   // Sample data
   const samplePhotos = [
     'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=400&h=300&fit=crop',
     'https://images.unsplash.com/photo-1565008447742-97f6f38c985c?w=400&h=300&fit=crop',
     'https://images.unsplash.com/photo-1617469767053-d3b523a0b982?w=400&h=300&fit=crop',
-    'https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=400&h=300&fit=crop'
+    'https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=400&h=300&fit=crop',
   ];
 
   const sampleLinks = [
     { title: 'Documentation', url: '#', description: 'Technical specifications' },
     { title: 'Download STL', url: '#', description: 'Get the 3D model file' },
     { title: 'Related Models', url: '#', description: 'Similar designs' },
-    { title: 'Designer Profile', url: '#', description: 'View creator\'s work' }
+    { title: 'Designer Profile', url: '#', description: "View creator's work" },
   ];
 
   const modelDataAsSelectOptions = modelData.map((model) => {
-    return { 'value': model.file, 'label': model.label }
-  })
+    return { value: model.file, label: model.label };
+  });
 
   const getThreeDimensionalModelByFile = (file: string) => {
-    return modelData.find(model => model.file === file)
-  }
+    return modelData.find((model) => model.file === file);
+  };
 
   const handleChangeSelectedModel = (model: string) => {
-    setShowModelPicker(false)
-    var m = getThreeDimensionalModelByFile(model)
+    setShowModelPicker(false);
+    var m = getThreeDimensionalModelByFile(model);
     if (m) {
-      setSelectedModel(m)
+      setSelectedModel(m);
     }
-  }
+  };
 
   const handleClickShowPhotos = () => {
-    setIsExpanded(!isExpanded)
-    setShowPhotoModal(!showPhotoModal)
-  }
+    setIsExpanded(!isExpanded);
+    setShowPhotoModal(!showPhotoModal);
+  };
 
   const toggleMenu = () => {
     setIsExpanded(!isExpanded);
     if (isExpanded) {
-      setShowModelPicker(false)
+      setShowModelPicker(false);
       setShowColorPicker(false);
       setShowLinksMenu(false);
     }
   };
 
   return (
-    <div style={{
-      position: 'absolute',
-      top: '1rem',
-      left: '1rem',
-      zIndex: 1000
-    }}>
+    <div
+      style={{
+        position: 'absolute',
+        top: '1rem',
+        left: '1rem',
+        zIndex: 1000,
+      }}
+    >
       <Group gap="xs" align="center" style={{ alignItems: 'center' }}>
-
         {/* Info Button */}
         <Popover
           opened={showInfo}
           onClose={() => setShowInfo(false)}
           onDismiss={() => setShowInfo(false)}
-          position='bottom-start'
+          position="bottom-start"
           withArrow
           width={300}
         >
           <Popover.Target>
-            <Tooltip label={showInfo ? "Hide info" : "Show info"}>
+            <Tooltip label={showInfo ? 'Hide info' : 'Show info'}>
               <ActionIcon
                 variant="subtle"
                 size="md"
@@ -131,31 +138,34 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedModelDe
           </Popover.Target>
           <Popover.Dropdown>
             <Stack gap="sm">
-              <Text size="sm" fw={500}>3D Modeling</Text>
-              <Text size="xs" c="dimmed">
-                Welcome to my 3D Model explorer! This page is built with ThreeJS to highlight models that
-                I designed myself! Feel free to expand the menu to browse and learn about the various models
-                that I've made!
+              <Text size="sm" fw={500}>
+                3D Modeling
               </Text>
               <Text size="xs" c="dimmed">
-                I've always liked building stuff and figuring out how things work, so getting into CAD
-                and 3D printing was kind of a natural fit for me. I took some CAD classes back in high school,
-                but things really clicked in college when I started building racing drones and needed
-                custom parts. That's when I got into 3D printing and started messing around with designs
-                of my own.
+                Welcome to my 3D Model explorer! This page is built with ThreeJS to highlight models
+                that I designed myself! Feel free to expand the menu to browse and learn about the
+                various models that I've made!
               </Text>
               <Text size="xs" c="dimmed">
-                These days, I use my Ender 3 S1 along with OnShape for design and Cura for slicing. Most
-                of what I make is just random stuff to solve small everyday problems—organizers, mounts,
-                quick fixes, that kind of thing. It's not something I do for work, but it's a fun way to
-                scratch the engineering itch and build things that are actually useful.
+                I've always liked building stuff and figuring out how things work, so getting into
+                CAD and 3D printing was kind of a natural fit for me. I took some CAD classes back
+                in high school, but things really clicked in college when I started building racing
+                drones and needed custom parts. That's when I got into 3D printing and started
+                messing around with designs of my own.
+              </Text>
+              <Text size="xs" c="dimmed">
+                These days, I use my Ender 3 S1 along with OnShape for design and Cura for slicing.
+                Most of what I make is just random stuff to solve small everyday
+                problems—organizers, mounts, quick fixes, that kind of thing. It's not something I
+                do for work, but it's a fun way to scratch the engineering itch and build things
+                that are actually useful.
               </Text>
             </Stack>
           </Popover.Dropdown>
         </Popover>
 
         {/* Main Menu Button */}
-        <Tooltip label={isExpanded ? "Collapse menu" : "Expand menu"}>
+        <Tooltip label={isExpanded ? 'Collapse menu' : 'Expand menu'}>
           <ActionIcon
             variant="subtle"
             size="md"
@@ -175,23 +185,28 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedModelDe
 
         {/* Expanded Menu Items */}
         {isExpanded && (
-          <Paper shadow="lg" p="xs" radius="md" style={{
-            maxHeight: '28px', // Match button height
-            display: 'flex',
-            alignItems: 'center'
-          }}>
+          <Paper
+            shadow="lg"
+            p="xs"
+            radius="md"
+            style={{
+              maxHeight: '28px', // Match button height
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             <Group gap="xs">
               {/* Model Selector */}
               <Popover
                 opened={showModelPicker}
                 onClose={() => setShowModelPicker(false)}
                 onDismiss={() => setShowModelPicker(false)}
-                position='bottom'
+                position="bottom"
               >
                 <PopoverTarget>
                   <Tooltip label="Change model">
                     <ActionIcon
-                      variant='subtle'
+                      variant="subtle"
                       onClick={() => setShowModelPicker(!showModelPicker)}
                     >
                       <IconCube size={16} />
@@ -200,7 +215,9 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedModelDe
                 </PopoverTarget>
                 <PopoverDropdown>
                   <Stack gap="sm">
-                    <Text size="sm" fw={500}>Select a model:</Text>
+                    <Text size="sm" fw={500}>
+                      Select a model:
+                    </Text>
                     <Select
                       data={modelDataAsSelectOptions}
                       value={selectedModel.file}
@@ -234,9 +251,15 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedModelDe
                 </Popover.Target>
                 <Popover.Dropdown>
                   <Stack gap="sm">
-                    <Text size="sm" fw={500}>Select Color</Text>
-                    <ColorPicker value={selectedMaterialColor} onChange={setSelectedMaterialColor} format="hexa" withPicker />
-
+                    <Text size="sm" fw={500}>
+                      Select Color
+                    </Text>
+                    <ColorPicker
+                      value={selectedMaterialColor}
+                      onChange={setSelectedMaterialColor}
+                      format="hexa"
+                      withPicker
+                    />
                   </Stack>
                 </Popover.Dropdown>
               </Popover>
@@ -246,7 +269,7 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedModelDe
                 opened={showDescriptionPanel}
                 onClose={() => setShowDescriptionPanel(false)}
                 onDismiss={() => setShowDescriptionPanel(false)}
-                position='bottom'
+                position="bottom"
                 withArrow
                 width={250}
               >
@@ -262,61 +285,60 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedModelDe
                 </Popover.Target>
                 <Popover.Dropdown>
                   <Stack gap="sm">
-                    <Text size="sm" fw={500}>{selectedModel.label}.stl</Text>
-                    <Text size="xs" c="dimmed">{selectedModelDescription}</Text>
+                    <Text size="sm" fw={500}>
+                      {selectedModel.label}.stl
+                    </Text>
+                    <Text size="xs" c="dimmed">
+                      {selectedModelDescription}
+                    </Text>
                   </Stack>
                 </Popover.Dropdown>
               </Popover>
 
               {/* Photos Modal */}
-              {
-                selectedModelPhotoUrls.length > 0 && (
-                  <Tooltip label="View photos">
-                    <ActionIcon
-                      variant="subtle"
-                      onClick={handleClickShowPhotos}
-                    >
-                      <IconCamera size={16} />
-                    </ActionIcon>
-                  </Tooltip>
-                )
-              }
-              {
-                selectedModel.urls && (
-                  <Menu
-                    opened={showLinksMenu}
-                    onClose={() => setShowLinksMenu(false)}
-                    position="bottom"
-                    withArrow
-                  >
-                    <Menu.Target>
-                      <Tooltip label="Show links">
-                        <ActionIcon
-                          variant="subtle"
-                          onClick={() => setShowLinksMenu(!showLinksMenu)}
-                        >
-                          <IconExternalLink size={16} />
-                        </ActionIcon>
-                      </Tooltip>
-                    </Menu.Target>
-                    <Menu.Dropdown>
-                      <Menu.Label>Quick Links</Menu.Label>
-                      {selectedModel.urls.map((link, index) => (
-                        <Menu.Item
-                          key={index}
-                          leftSection={<IconExternalLink size={14} />}
-                          component="a" href={link.url} target="_blank" rel="noopener noreferrer"
-                        >
-                          <div>
-                            <Text size="sm">{link.label}</Text>
-                            <Text size="xs" c="dimmed">{link.description}</Text>
-                          </div>
-                        </Menu.Item>
-                      ))}
-                    </Menu.Dropdown>
-                  </Menu>
-                )
-              }
+              {selectedModelPhotoUrls.length > 0 && (
+                <Tooltip label="View photos">
+                  <ActionIcon variant="subtle" onClick={handleClickShowPhotos}>
+                    <IconCamera size={16} />
+                  </ActionIcon>
+                </Tooltip>
+              )}
+              {selectedModel.urls && (
+                <Menu
+                  opened={showLinksMenu}
+                  onClose={() => setShowLinksMenu(false)}
+                  position="bottom"
+                  withArrow
+                >
+                  <Menu.Target>
+                    <Tooltip label="Show links">
+                      <ActionIcon variant="subtle" onClick={() => setShowLinksMenu(!showLinksMenu)}>
+                        <IconExternalLink size={16} />
+                      </ActionIcon>
+                    </Tooltip>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    <Menu.Label>Quick Links</Menu.Label>
+                    {selectedModel.urls.map((link, index) => (
+                      <Menu.Item
+                        key={index}
+                        leftSection={<IconExternalLink size={14} />}
+                        component="a"
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <div>
+                          <Text size="sm">{link.label}</Text>
+                          <Text size="xs" c="dimmed">
+                            {link.description}
+                          </Text>
+                        </div>
+                      </Menu.Item>
+                    ))}
+                  </Menu.Dropdown>
+                </Menu>
+              )}
             </Group>
           </Paper>
         )}
@@ -330,5 +352,5 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedModelDe
         }}
       />
     </div>
-  )
+  );
 }
