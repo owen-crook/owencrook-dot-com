@@ -53,7 +53,6 @@ export default function ThreeDimensionalModelingPage() {
       position: "relative",
       width: '100%',
       height: '100%',
-      border: '2px solid blue'
     }}>
 
       <div style={{
@@ -66,6 +65,7 @@ export default function ThreeDimensionalModelingPage() {
           setSelectedModel={setSelectedModel}
           selectedMaterialColor={selectedMaterialColor}
           setSelectedMaterialColor={setSelectedMaterialColor}
+          selectedModelDescription={modelDescription}
         />
       </div>
 

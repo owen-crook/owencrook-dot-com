@@ -35,12 +35,13 @@ import { modelData } from './constants'
 
 type STLViewerMenuProps = {
   selectedModel: ThreeDimensionalModel
+  selectedModelDescription: string
   setSelectedModel: (model: ThreeDimensionalModel) => void
   selectedMaterialColor: string
   setSelectedMaterialColor: (color: string) => void
 }
 
-export function STLViewerMenu({ selectedModel, setSelectedModel, selectedMaterialColor, setSelectedMaterialColor }: STLViewerMenuProps) {
+export function STLViewerMenu({ selectedModel, setSelectedModel, selectedModelDescription, selectedMaterialColor, setSelectedMaterialColor }: STLViewerMenuProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const [showModelPicker, setShowModelPicker] = useState(false)
@@ -49,7 +50,6 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedMateria
   const [showDescriptionPanel, setShowDescriptionPanel] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [showLinksMenu, setShowLinksMenu] = useState(false);
-  const [selectedColor, setSelectedColor] = useState('#ff6b6b');
   const [showInstructions, setShowInstructions] = useState(true);
 
   // Sample data
@@ -133,6 +133,7 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedMateria
               <Popover
                 opened={showModelPicker}
                 onClose={() => setShowModelPicker(false)}
+                onDismiss={() => setShowModelPicker(false)}
                 position='bottom'
               >
                 <PopoverTarget>
@@ -190,14 +191,32 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedMateria
               </Popover>
 
               {/* Description Panel */}
-              <Tooltip label="Show description">
-                <ActionIcon
-                  variant="subtle"
-                  onClick={() => setShowDescriptionPanel(true)}
-                >
-                  <IconFileText size={16} />
-                </ActionIcon>
-              </Tooltip>
+              <Popover
+                opened={showDescriptionPanel}
+                onClose={() => setShowDescriptionPanel(false)}
+                onDismiss={() => setShowDescriptionPanel(false)}
+                position='bottom'
+                withArrow
+                width={250}
+              >
+                <Popover.Target>
+                  <Tooltip label="Show description">
+                    <ActionIcon
+                      variant="subtle"
+                      onClick={() => setShowDescriptionPanel(!showDescriptionPanel)}
+                    >
+                      <IconFileText size={16} />
+                    </ActionIcon>
+                  </Tooltip>
+                </Popover.Target>
+                <Popover.Dropdown>
+                  <Stack gap="sm">
+                    <Text size="sm" fw={500}>{selectedModel.label}.stl</Text>
+                    <Text size="xs" c="dimmed">{selectedModelDescription}</Text>
+                  </Stack>
+                </Popover.Dropdown>
+              </Popover>
+
 
               {/* Photos Modal */}
               <Tooltip label="View photos">
@@ -208,9 +227,6 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedMateria
                   <IconCamera size={16} />
                 </ActionIcon>
               </Tooltip>
-
-              {/*TODO: remap Links Menu */}
-
 
               {
                 selectedModel.urls && (
@@ -236,7 +252,7 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedMateria
                         <Menu.Item
                           key={index}
                           leftSection={<IconExternalLink size={14} />}
-                          onClick={(e) => e.preventDefault()} // TODO: make this actually open a new url
+                          component="a" href={link.url} target="_blank" rel="noopener noreferrer"
                         >
                           <div>
                             <Text size="sm">{link.label}</Text>
@@ -252,44 +268,6 @@ export function STLViewerMenu({ selectedModel, setSelectedModel, selectedMateria
           </Paper>
         )}
       </Group>
-
-
-      {/* TODO: remap Description Drawer */}
-      <Drawer
-        opened={showDescriptionPanel}
-        onClose={() => setShowDescriptionPanel(false)}
-        title="Description"
-        position="right"
-        size="sm"
-      >
-        <Stack gap="md">
-          <Text size="sm">
-            This is a detailed description of your STL model. You can include technical
-            specifications, dimensions, materials, printing instructions, and any other
-            relevant information about the 3D model.
-          </Text>
-
-          <div>
-            <Text fw={500} size="sm" mb="xs">Specifications:</Text>
-            <List size="sm">
-              <List.Item>Dimensions: 100 x 50 x 25 mm</List.Item>
-              <List.Item>Material: PLA recommended</List.Item>
-              <List.Item>Layer height: 0.2mm</List.Item>
-              <List.Item>Infill: 20%</List.Item>
-              <List.Item>Print time: ~2 hours</List.Item>
-              <List.Item>Support: Not required</List.Item>
-            </List>
-          </div>
-
-          <div>
-            <Text fw={500} size="sm" mb="xs">Notes:</Text>
-            <Text size="sm" c="dimmed">
-              This model has been optimized for FDM printing. All overhangs are within
-              45 degrees and no support material should be needed for most printers.
-            </Text>
-          </div>
-        </Stack>
-      </Drawer>
 
       {/* TODO: remap Photo Modal */}
       <Modal
