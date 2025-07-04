@@ -15,11 +15,11 @@ import {
   ColorPicker,
   Group,
   Menu,
+  NativeSelect,
   Paper,
   Popover,
   PopoverDropdown,
   PopoverTarget,
-  Select,
   Stack,
   Text,
   Tooltip,
@@ -200,10 +200,11 @@ export function STLViewerMenu({
                     <Text size="sm" fw={500}>
                       Select a model:
                     </Text>
-                    <Select
+                    <NativeSelect
                       data={modelDataAsSelectOptions}
                       value={selectedModel.file}
-                      onChange={(_value) => {
+                      onChange={(e) => {
+                        const _value = e.currentTarget.value;
                         if (_value !== null) {
                           handleChangeSelectedModel(_value);
                         }
