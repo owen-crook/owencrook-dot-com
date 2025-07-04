@@ -45,11 +45,8 @@ export default function ThreeDimensionalModelingPage() {
   }, [selectedModel]);
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}
-    >
-      <div
-        style={{ zIndex: 1000, backgroundColor: 'rgba(255,0,0,0.1)' }}
-      >
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <div style={{ zIndex: 1000, backgroundColor: 'rgba(255,0,0,0.1)' }}>
         <STLViewerMenu
           selectedModel={selectedModel}
           setSelectedModel={setSelectedModel}

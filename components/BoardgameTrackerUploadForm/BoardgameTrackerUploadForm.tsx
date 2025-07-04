@@ -73,10 +73,7 @@ export default function BoardGameTrackerUploadForm() {
   }
 
   return (
-    <Box
-      maw={200}
-      w="100%"
-    >
+    <Box maw={200} w="100%">
       <form onSubmit={handleSubmit}>
         <Stack>
           {/* Responsive input layout */}

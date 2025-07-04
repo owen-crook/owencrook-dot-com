@@ -28,7 +28,9 @@ export default function RootLayout({ children }: { children: any }) {
                 <Header />
               </AppShell.Header>
 
-              <AppShell.Main style={{ position: 'relative', height: '100vh', }}>{children}</AppShell.Main>
+              <AppShell.Main style={{ position: 'relative', height: '100vh' }}>
+                {children}
+              </AppShell.Main>
             </AppShell>
           </MantineProvider>
         </SessionProvider>
