@@ -30,7 +30,6 @@ export function Header() {
     const menuItems = link.links?.map((item) => (
       <Menu.Item key={item.label}>
         <Link
-          key={item.label}
           href={item.link}
           className={classes.link}
           data-active={pathname === item.link || undefined}
@@ -100,16 +99,17 @@ export function Header() {
 
   return (
     <header className={classes.header}>
-      <Container size="md">
-        <div className={classes.inner}>
-          <Group gap={5} visibleFrom="sm">
-            {items}
-          </Group>
-          <Group gap="xs">
-            {authButton}
+      <Container size="md" className={classes.inner}>
+        <Group justify="space-between" align="center" h={56} style={{ width: '100%' }}>
+          <Group gap={5} align="center">
+            <Group gap={5} visibleFrom="sm" align="center">
+              {items}
+            </Group>
+            {/* TODO (OC-): add in mobile menu*/}
             <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="sm" />
           </Group>
-        </div>
+          {authButton}
+        </Group>
       </Container>
     </header>
   );
