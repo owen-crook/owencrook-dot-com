@@ -6,7 +6,6 @@ import React from 'react';
 import { SessionProvider } from 'next-auth/react';
 import { AppShell, mantineHtmlProps, MantineProvider } from '@mantine/core';
 import { Header } from '@/components/Header/Header';
-import { NavbarMinimal } from '@/components/NavbarMinimal/NavbarMinimal';
 import { theme } from '../theme';
 
 export default function RootLayout({ children }: { children: any }) {
@@ -17,11 +16,10 @@ export default function RootLayout({ children }: { children: any }) {
           <MantineProvider theme={theme}>
             <AppShell
               header={{ height: 56 }} // needs to match the components
-              navbar={{ width: 80, breakpoint: 'sm' }} // needs to match the components
               styles={{
-                root: { height: '100vh', overflow: 'hidden' },
+                root: {},
                 main: {
-                  height: 'calc(100vh - 56px)', // subtract the header height
+                  overflowY: 'auto',
                 },
               }}
             >
@@ -30,11 +28,7 @@ export default function RootLayout({ children }: { children: any }) {
                 <Header />
               </AppShell.Header>
 
-              <AppShell.Navbar>
-                <NavbarMinimal />
-              </AppShell.Navbar>
-
-              <AppShell.Main style={{ position: 'relative' }}>{children}</AppShell.Main>
+              <AppShell.Main style={{ position: 'relative', height: '100vh', }}>{children}</AppShell.Main>
             </AppShell>
           </MantineProvider>
         </SessionProvider>

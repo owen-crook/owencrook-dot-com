@@ -73,75 +73,89 @@ export default function BoardGameTrackerUploadForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Stack>
-        <Group wrap="nowrap">
-          {/* Select */}
-          <Select
-            label="Select a game"
-            data={Object.values(SupportedGames)}
-            value={selectedGame}
-            onChange={(value) => setSelectedGame(value as SupportedGames)}
-            required
-          />
+    <Box
+      maw={200}
+      w="100%"
+    >
+      <form onSubmit={handleSubmit}>
+        <Stack>
+          {/* Responsive input layout */}
+          <Stack
+            gap="md"
+            style={{
+              flexDirection: 'column',
+            }}
+          >
+            {/* Select */}
+            <Select
+              label="Select a game"
+              data={Object.values(SupportedGames)}
+              value={selectedGame}
+              onChange={(value) => setSelectedGame(value as SupportedGames)}
+              required
+              style={{ flex: 1 }}
+            />
 
-          {/* Date Picker */}
-          <DatePickerInput
-            label="Select a date"
-            value={date}
-            onChange={setDate}
-            valueFormat="YYYY-MM-DD"
-            firstDayOfWeek={0}
-            defaultChecked
-            maxDate={new Date()}
-            hideOutsideDates
-            required
-          />
+            {/* Date Picker */}
+            <DatePickerInput
+              label="Select a date"
+              value={date}
+              onChange={setDate}
+              valueFormat="YYYY-MM-DD"
+              firstDayOfWeek={0}
+              defaultChecked
+              maxDate={new Date()}
+              hideOutsideDates
+              required
+              style={{ flex: 1 }}
+            />
 
-          {/* File Input */}
-          <FileInput
-            label="Upload an image"
-            placeholder="Click to upload"
-            accept="image/png,image/jpeg"
-            value={file}
-            onChange={setFile}
-            required
-          />
-        </Group>
-        {/* Submit Button */}
-        <Group mt="md">
-          <Button type="submit" disabled={!file || !date || !selectedGame}>
-            Submit
-          </Button>
-        </Group>
-        {/* Display Loader Centered */}
-        {loading && (
-          <Group justify="center" mt="xl">
-            <Loader size="lg" />
-            <Text>Processing image...</Text>
+            {/* File Input */}
+            <FileInput
+              label="Upload an image"
+              placeholder="Click to upload"
+              accept="image/png,image/jpeg"
+              value={file}
+              onChange={setFile}
+              required
+              style={{ flex: 1 }}
+            />
+          </Stack>
+          {/* Submit Button */}
+          <Group mt="md" justify="center">
+            <Button type="submit" disabled={!file || !date || !selectedGame}>
+              Submit
+            </Button>
           </Group>
-        )}
+          {/* Display Loader Centered */}
+          {loading && (
+            <Group justify="center" mt="xl">
+              <Loader size="lg" />
+              <Text>Processing image...</Text>
+            </Group>
+          )}
 
-        {/* Display Error Message */}
-        {errorWhileParsing && (
-          <Box mt="xl" p="md" style={{ border: '1px solid red', borderRadius: '4px' }}>
-            <Text c="red" fw={700}>
-              Upload Error:
-            </Text>
-            <Text c="red">{errorWhileParsing}</Text>
-          </Box>
-        )}
+          {/* Display Error Message */}
+          {errorWhileParsing && (
+            <Box mt="xl" p="md" style={{ border: '1px solid red', borderRadius: '4px' }}>
+              <Text c="red" fw={700}>
+                Upload Error:
+              </Text>
+              <Text c="red">{errorWhileParsing}</Text>
+            </Box>
+          )}
 
-        {/* Display Parsed Results as JSON */}
-        {parsedResult && (
-          <Box mt="xl">
-            <Text fw={700}>Parsed Results:</Text>
-            <Code block style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
-              {JSON.stringify(parsedResult, null, 2)}
-            </Code>
-          </Box>
-        )}
-      </Stack>
-    </form>
+          {/* Display Parsed Results as JSON */}
+          {parsedResult && (
+            <Box mt="xl">
+              <Text fw={700}>Parsed Results:</Text>
+              <Code block style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+                {JSON.stringify(parsedResult, null, 2)}
+              </Code>
+            </Box>
+          )}
+        </Stack>
+      </form>
+    </Box>
   );
 }

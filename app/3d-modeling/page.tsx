@@ -45,18 +45,10 @@ export default function ThreeDimensionalModelingPage() {
   }, [selectedModel]);
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-      }}
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}
     >
       <div
-        style={{
-          zIndex: 1000,
-          backgroundColor: 'rgba(255,0,0,0.1)',
-        }}
+        style={{ zIndex: 1000, backgroundColor: 'rgba(255,0,0,0.1)' }}
       >
         <STLViewerMenu
           selectedModel={selectedModel}
@@ -68,12 +60,7 @@ export default function ThreeDimensionalModelingPage() {
         />
       </div>
 
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-        }}
-      >
+      <div style={{ width: '100%', height: '100%' }}>
         <STLViewer
           modelFileName={selectedModel.file}
           materialColor={selectedMaterialColor}
