@@ -1,0 +1,11 @@
+export enum SupportedGames {
+  WYRMSPAN = 'Wyrmspan',
+  WINGSPAN = 'Wingspan',
+}
+
+export interface PlayerScore {
+  id: string;
+  name: string;
+  total?: number;
+  [key: string]: any;
+}
