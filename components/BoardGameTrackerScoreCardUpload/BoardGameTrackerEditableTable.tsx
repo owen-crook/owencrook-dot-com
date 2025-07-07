@@ -15,6 +15,11 @@ export default function BoardGameTrackerEditableTable({ playerScores, handlePlay
   const [editingColumnId, setEditingColumnId] = useState<string | null>(null);
   const [tempColumnName, setTempColumnName] = useState<string>('')
 
+  // dynamic styling vars
+  const tableMaxWidth = 750
+  const columnMaxWidth = 125
+  const columnMinWidth = 100
+
   useEffect(() => {
     setEditablePlayerScores(playerScores)
   }, [playerScores])
@@ -103,8 +108,8 @@ export default function BoardGameTrackerEditableTable({ playerScores, handlePlay
       <Table.Th
         pos='sticky'
         left={0}
-        miw={100}
-        maw={200}
+        maw={columnMaxWidth}
+        miw={columnMinWidth}
         style={{
           zIndex: 10,
           backgroundColor: 'var(--mantine-color-body)',
@@ -114,8 +119,8 @@ export default function BoardGameTrackerEditableTable({ playerScores, handlePlay
         return (
           <Table.Th
             key={playerCol.id}
-            miw={100}
-            maw={100}
+            maw={columnMaxWidth}
+            miw={columnMinWidth}
             align="center"
           >
             {editingColumnId === playerCol.id ? (
@@ -179,8 +184,8 @@ export default function BoardGameTrackerEditableTable({ playerScores, handlePlay
         <Table.Td
           pos='sticky'
           left={0}
-          miw={100}
-          maw={200}
+          maw={columnMaxWidth}
+          miw={columnMinWidth}
           style={{
             zIndex: 10,
             backgroundColor: rowIndex % 2 === 0 ? 'var(--mantine-color-body)' : 'var(--mantine-color-gray-0)',
@@ -195,6 +200,8 @@ export default function BoardGameTrackerEditableTable({ playerScores, handlePlay
             return (
               <Table.Td
                 key={`${category}-${playerCol.id}`}
+                maw={columnMaxWidth}
+                miw={columnMinWidth}
                 style={{
                   backgroundColor: rowIndex % 2 === 0 ? 'var(--mantine-color-body)' : 'var(--mantine-color-gray-0)',
                 }}
@@ -219,8 +226,8 @@ export default function BoardGameTrackerEditableTable({ playerScores, handlePlay
       <Table.Th
         pos='sticky'
         left={0}
-        miw={100}
-        maw={200}
+        maw={columnMaxWidth}
+        miw={columnMinWidth}
         style={{
           zIndex: 10,
           backgroundColor: 'var(--mantine-color-body)',
@@ -230,7 +237,11 @@ export default function BoardGameTrackerEditableTable({ playerScores, handlePlay
       </Table.Th>
       {playerCols.map((playerCol) => {
         return (
-          <Table.Th key={`total-${playerCol.id}`} >
+          <Table.Th
+            key={`total-${playerCol.id}`}
+            maw={columnMaxWidth}
+            miw={columnMinWidth}
+          >
             {calculatedColumnTotals[playerCol.id]}
           </Table.Th>
         )
@@ -239,8 +250,8 @@ export default function BoardGameTrackerEditableTable({ playerScores, handlePlay
   )
 
   return (
-    <Paper maw={300} shadow="lg" p="md" radius="md" withBorder>
-      <ScrollArea w="100%" h={500}> {/* Set a fixed height to enable vertical scrolling if needed */}
+    <Paper w="100%" maw={tableMaxWidth} shadow="lg" p="md" radius="md" withBorder>
+      <ScrollArea w="100%" mah="100%"> {/* Set a fixed height to enable vertical scrolling if needed */}
         <Table
           striped
           highlightOnHover
