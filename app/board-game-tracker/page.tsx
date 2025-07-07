@@ -1,5 +1,5 @@
-import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
+import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth'; // Ensure this path is correct
 
 // Import your new Client Component
@@ -7,7 +7,7 @@ import BoardGameTrackerClientPage from './BoardGameTrackerClientPage'; // You'll
 
 export default async function BoardGameTrackerServerPage() {
   const session = await getServerSession(authOptions);
-  const token = session?.idToken
+  const token = session?.idToken;
 
   // Server-side redirects
   if (!session?.user?.email) {
@@ -15,7 +15,7 @@ export default async function BoardGameTrackerServerPage() {
   }
 
   if (!token) {
-    redirect('/')
+    redirect('/');
   }
 
   const adminEmails = process.env.ADMIN_EMAILS?.split(',') ?? [];
@@ -25,5 +25,7 @@ export default async function BoardGameTrackerServerPage() {
   }
 
   // Pass necessary props to the Client Component
-  return <BoardGameTrackerClientPage token={token} isAdmin={isAdmin} userEmail={session.user.email} />;
+  return (
+    <BoardGameTrackerClientPage token={token} isAdmin={isAdmin} userEmail={session.user.email} />
+  );
 }

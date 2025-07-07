@@ -1,35 +1,39 @@
-"use client"
+'use client';
 
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 
-import { useState } from "react";
-import { Button, Collapse, FileInput, Paper, NativeSelect, Stack, Title } from "@mantine/core";
+import { useState } from 'react';
+import { Button, Collapse, FileInput, NativeSelect, Paper, Stack, Title } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { SupportedGames } from "./types"
+import { SupportedGames } from './types';
 
 interface BoardGameTrackerImageUploadFormProps {
-  showForm: boolean
-  loading: boolean
-  onFormSubmission: (file: File, date: Date, game: SupportedGames) => void
+  showForm: boolean;
+  loading: boolean;
+  onFormSubmission: (file: File, date: Date, game: SupportedGames) => void;
 }
 
-export default function BoardGameTrackerImageUploadForm({ showForm, onFormSubmission, loading }: BoardGameTrackerImageUploadFormProps) {
+export default function BoardGameTrackerImageUploadForm({
+  showForm,
+  onFormSubmission,
+  loading,
+}: BoardGameTrackerImageUploadFormProps) {
   const [selectedGame, setSelectedGame] = useState<SupportedGames>(SupportedGames.WYRMSPAN);
   const [date, setDate] = useState<Date | null>(new Date());
   const [file, setFile] = useState<File | null>(null);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!file || !date || !selectedGame) {
       return;
     }
-    onFormSubmission(file, date, selectedGame)
-  }
+    onFormSubmission(file, date, selectedGame);
+  };
 
   return (
     <Collapse in={showForm}>
-      <Paper maw={300} shadow="lg" p="md" radius="md" withBorder >
+      <Paper maw={300} shadow="lg" p="md" radius="md" withBorder>
         <Stack gap="lg">
           <Title order={3}>Upload Scorecard</Title>
           <form onSubmit={handleSubmit}>
@@ -39,10 +43,10 @@ export default function BoardGameTrackerImageUploadForm({ showForm, onFormSubmis
                 label="Select a game"
                 data={Object.values(SupportedGames)}
                 value={selectedGame}
-                onChange={e => {
-                  const _value = e.currentTarget.value
+                onChange={(e) => {
+                  const _value = e.currentTarget.value;
                   if (_value != null) {
-                    setSelectedGame(_value as SupportedGames)
+                    setSelectedGame(_value as SupportedGames);
                   }
                 }}
               />
@@ -51,7 +55,7 @@ export default function BoardGameTrackerImageUploadForm({ showForm, onFormSubmis
               <DatePickerInput
                 label="Game date"
                 value={date}
-                onChange={value => setDate(value ? new Date(value) : null)}
+                onChange={(value) => setDate(value ? new Date(value) : null)}
                 valueFormat="YYYY-MM-DD"
                 firstDayOfWeek={0}
                 maxDate={new Date()}
@@ -83,5 +87,5 @@ export default function BoardGameTrackerImageUploadForm({ showForm, onFormSubmis
         </Stack>
       </Paper>
     </Collapse>
-  )
+  );
 }
