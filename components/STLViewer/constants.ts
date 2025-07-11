@@ -49,5 +49,40 @@ export const modelData: ThreeDimensionalModel[] = [
       },
     ],
   },
-  // TODO: add more of my models
+  {
+    label: 'Ceramics Stamp',
+    file: 'ceramics-stamp',
+    numberOfPhotos: 0,
+    urls: [
+      {
+        url: 'https://cad.onshape.com/documents/3ea4a1be4b6595ed20435a03/w/e0bf52dc51a2830b8409992e/e/49a919ef0779289b7008eb7a?renderMode=0&uiState=687075e15838dc772d213d86',
+        label: 'OnShape',
+        description: 'View the CAD file',
+      },
+    ],
+    rotation: { x: 0, y: -180, z: 0 },
+  },
+  {
+    label: 'Honeycomb Lamp',
+    file: 'honeycomb-lamp',
+    numberOfPhotos: 3,
+    urls: [
+      {
+        url: 'https://cad.onshape.com/documents/bc576d8ebb6250084e0312f4/w/782304c94efb53f468da8de4/e/ab351bd39de305335975b117?renderMode=0&uiState=68707c859293c94e944be1d5',
+        label: 'OnShape',
+        description: 'View the CAD assembly',
+      },
+      {
+        url: 'https://www.thingiverse.com/thing:4807723',
+        label: 'Original Lamp',
+        description: 'By Bemko on Thingiverse',
+      },
+      {
+        url: 'https://www.amazon.com/dp/B08DXL1DZ3?ref_=ppx_hzsearch_conn_dt_b_fed_asin_title_7&th=1',
+        label: 'Hanging Lantern Cords',
+        description: 'Found on Amazon',
+      },
+    ],
+    rotation: { x: -90, y: 0, z: 0 },
+  },
 ];

@@ -269,7 +269,7 @@ export function STLViewerMenu({
                 <Popover.Dropdown>
                   <Stack gap="sm">
                     <Text size="sm" fw={500}>
-                      {selectedModel.label}.stl
+                      {selectedModel.label}
                     </Text>
                     <Text size="xs" c="dimmed">
                       {selectedModelDescription}
