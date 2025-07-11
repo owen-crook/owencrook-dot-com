@@ -1,0 +1,6 @@
+I wanted accent lighting in one of my rooms, however I wanted something that looked unique and worked well with smart bulbs - not something you could just find at Target or Ikea.
+I found this honeycomb lamp on Thingiverse, but I didn't love the base nor the bulb attachment mechanism, so I decided to take my own stab at a design.
+I started by finding a long hanging lantern cord that was threaded that I could design around.
+Once I had the lantern cables in hand, I started designing a piece that I could friction fit the bulb end of the lantern into that would also fit into
+the base of the honeycomb lamp shade. I ended up making a large thread system that would fit through the existing base of the lamp and could be screwed into
+by whatever stand i generated. I wanted a small stand that didn't distract from the cool geometry of the lamp, so I made a simple tripod like design.
