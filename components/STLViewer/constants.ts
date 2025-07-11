@@ -49,5 +49,17 @@ export const modelData: ThreeDimensionalModel[] = [
       },
     ],
   },
-  // TODO: add more of my models
+  {
+    label: 'Ceramics Stamp',
+    file: 'ceramics-stamp',
+    numberOfPhotos: 0,
+    urls: [
+      {
+        url: 'https://cad.onshape.com/documents/3ea4a1be4b6595ed20435a03/w/e0bf52dc51a2830b8409992e/e/49a919ef0779289b7008eb7a?renderMode=0&uiState=687075e15838dc772d213d86',
+        label: 'OnShape',
+        description: 'View the CAD file',
+      },
+    ],
+    rotation: { x: 0, y: -180, z: 0 },
+  }, // TODO: add more of my models
 ];
