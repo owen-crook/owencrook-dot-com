@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import isEqual from 'lodash/isEqual';
-import { Box, Loader, Stack, Title } from '@mantine/core';
+import { Box, Button, Loader, Stack, Title } from '@mantine/core';
+import BoardGameTrackerEditableGameData from '@/components/BoardGameTrackerScoreCardUpload/BoardGameTrackerEditableGameMetadata';
 import BoardGameTrackerEditableTable from '@/components/BoardGameTrackerScoreCardUpload/BoardGameTrackerEditableTable';
 import BoardGameTrackerImageUploadForm from '@/components/BoardGameTrackerScoreCardUpload/BoardGameTrackerImageUploadForm';
-import { PlayerScore, SupportedGames } from '@/components/BoardGameTrackerScoreCardUpload/types';
+import { GameMetadata, PlayerScore, SupportedGames } from '@/components/BoardGameTrackerScoreCardUpload/types';
 import {
   patchBoardGameTrackerUpdateScoreCard,
   postBoardGameTrackerParseScoreCard,
@@ -21,18 +22,62 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(true);
   const [parsedScorecardResults, setParsedScorecardresults] = useState<any>(null);
+  const [parsedGameData, setParsedGameData] = useState<GameMetadata>({ id: 'unknown' })
   const [parsedPlayerScores, setParsedPlayerScores] = useState<PlayerScore[]>([]);
   const [gameDataEdited, setGameDataEdited] = useState(false);
+  const [updatedGameData, setUpdatedGameData] = useState<GameMetadata>({ id: 'unknown' })
   const [playerScoresEdited, setPlayerScoresEdited] = useState(false);
   const [updatedPlayerScores, setUpdatedPlayerScores] = useState<PlayerScore[]>([]);
-  const [showSaveButton, setShowSaveButton] = useState(false);
   const [saveButtonEnabled, setSaveButtonEnabled] = useState(false);
 
   // make sure upon getting data from the API we correctly convert the scores to valid objects
   useEffect(() => {
+    if (typeof parsedScorecardResults !== 'object' ||
+      parsedScorecardResults === null) {
+      return
+    }
+    //handle game data
+    var gameData: GameMetadata
+    // id should be a uuid and always present, not rendered
+    if ('id' in parsedScorecardResults) {
+      gameData = {
+        id: String(parsedScorecardResults['id']),
+      }
+      // game should be a lowercase SupportedGame, will be rendered as drop down
+      if ('game' in parsedScorecardResults) {
+        const supportedGameType = Object.values(SupportedGames).find((enumValue) => {
+          enumValue.toLowerCase() === parsedScorecardResults['game'].toLowerCase()
+        })
+        if (supportedGameType) {
+          gameData['game'] = supportedGameType
+        }
+      }
+      // date should be a string with the format 2025-07-12T00:00:00Z, will be rendered as datepicker
+      if ('date' in parsedScorecardResults) {
+        // lazily assume API is right format, but still make sure valid date
+        const parsedDate = new Date(parsedScorecardResults['date'])
+        if (!isNaN(parsedDate.getTime())) {
+          gameData['date'] = parsedDate
+        }
+      }
+      // is_completed should be a boolean, will be rendered as a slider
+      if ('is_completed' in parsedScorecardResults) {
+        if (typeof parsedScorecardResults['is_completed'] === 'boolean') {
+          gameData['isCompleted'] = parsedScorecardResults['is_completed']
+        }
+      }
+      // location should be a string, will be rendered as text input
+      if ('location' in parsedScorecardResults) {
+        gameData['location'] = parsedScorecardResults['location']
+      }
+    } else {
+      gameData = {
+        id: 'unknown'
+      }
+    }
+    setParsedGameData(gameData)
+    // handle player scores
     if (
-      typeof parsedScorecardResults === 'object' &&
-      parsedScorecardResults !== null &&
       'player_scores' in parsedScorecardResults &&
       Array.isArray(parsedScorecardResults['player_scores'])
     ) {
@@ -53,7 +98,7 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
     }
   }, [gameDataEdited, playerScoresEdited]);
 
-  const handleGameDataEdited = (edited: boolean, data: any) => {};
+  const handleGameDataEdited = (edited: boolean, data: any) => { };
 
   const handlePlayerScoresEdited = (edited: boolean, editedPlayerScores: PlayerScore[]) => {
     if (
@@ -61,6 +106,7 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
       isEqual(editedPlayerScores, parsedPlayerScores) ||
       editedPlayerScores.length === 0
     ) {
+      setPlayerScoresEdited(false)
       return;
     }
     setUpdatedPlayerScores(editedPlayerScores);
@@ -86,7 +132,12 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
     setLoading(false);
   };
 
-  const onClickSave = async () => {};
+  const onClickSave = async () => {
+    setLoading(true)
+    setLoading(false)
+    // generate our update object based on changes so far
+
+  };
 
   // need to display the main game metadata and allow relevant parts to be edited
   // need to know when the data has been edited / have a handle for that -> things can be edited either at the game metadata or at the player score layer
@@ -113,10 +164,22 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
         />
       </Stack>
       {parsedScorecardResults && (
-        <BoardGameTrackerEditableTable
-          playerScores={parsedPlayerScores}
-          handlePlayerScoresEdited={handlePlayerScoresEdited}
-        />
+        <Stack align='center' w="100%" maw={750}>
+          <BoardGameTrackerEditableGameData
+            gameData={parsedGameData}
+            handleGameDataEdited={handleGameDataEdited}
+          />
+          <BoardGameTrackerEditableTable
+            playerScores={parsedPlayerScores}
+            handlePlayerScoresEdited={handlePlayerScoresEdited}
+          />
+          <Button
+            disabled={!saveButtonEnabled}
+            onClick={onClickSave}
+          >
+            Save Changes
+          </Button>
+        </Stack>
       )}
       {loading && <Loader size="lg" />}
     </Box>

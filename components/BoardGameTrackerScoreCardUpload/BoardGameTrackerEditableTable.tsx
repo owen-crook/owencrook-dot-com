@@ -16,7 +16,7 @@ import { PlayerScore } from './types';
 
 interface BoardGameTrackerEditableTableProps {
   playerScores: PlayerScore[];
-  handlePlayerScoresEdited?: (edited: boolean, editedPlayerScores: PlayerScore[]) => void;
+  handlePlayerScoresEdited: (edited: boolean, editedPlayerScores: PlayerScore[]) => void;
 }
 
 export default function BoardGameTrackerEditableTable({
@@ -40,7 +40,7 @@ export default function BoardGameTrackerEditableTable({
   useEffect(() => {
     if (handlePlayerScoresEdited) {
       console.log('fired handlePlayerScoresEdited(true)');
-      handlePlayerScoresEdited(true, editablePlayerScores); // TODO: validate if this fires on first render
+      handlePlayerScoresEdited(true, editablePlayerScores);
     }
   }, [isAltered, handlePlayerScoresEdited, editablePlayerScores]);
 
@@ -263,9 +263,8 @@ export default function BoardGameTrackerEditableTable({
 
   return (
     <Paper w="100%" maw={tableMaxWidth} shadow="lg" p="md" radius="md" withBorder>
-      <ScrollArea w="100%" mah="100%">
-        {' '}
-        {/* Set a fixed height to enable vertical scrolling if needed */}
+      <Text size="md" fw={500} mb="sm">Scorecard</Text>
+      <ScrollArea w="100%" mah="100%" type="auto" offsetScrollbars>
         <Table striped highlightOnHover withTableBorder withColumnBorders verticalSpacing="sm">
           <Table.Thead>{tableHeaders}</Table.Thead>
           <Table.Tbody>{tableRows}</Table.Tbody>

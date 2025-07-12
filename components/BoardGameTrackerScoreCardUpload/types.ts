@@ -9,3 +9,11 @@ export interface PlayerScore {
   total?: number;
   [key: string]: any;
 }
+
+export interface GameMetadata {
+  id: string
+  game?: SupportedGames
+  date?: Date
+  isCompleted?: boolean
+  location?: string
+}
