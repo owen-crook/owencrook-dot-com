@@ -46,7 +46,7 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
       // game should be a lowercase SupportedGame, will be rendered as drop down
       if ('game' in parsedScorecardResults) {
         const supportedGameType = Object.values(SupportedGames).find((enumValue) => {
-          enumValue.toLowerCase() === parsedScorecardResults['game'].toLowerCase()
+          return enumValue.toLowerCase() === parsedScorecardResults['game'].toLowerCase()
         })
         if (supportedGameType) {
           gameData['game'] = supportedGameType
@@ -98,7 +98,17 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
     }
   }, [gameDataEdited, playerScoresEdited]);
 
-  const handleGameDataEdited = (edited: boolean, data: any) => { };
+  const handleGameDataEdited = (edited: boolean, editedGameData: GameMetadata) => {
+    if (
+      !edited ||
+      isEqual(editedGameData, parsedGameData)
+    ) {
+      setGameDataEdited(false)
+      return
+    }
+    setUpdatedGameData(editedGameData)
+    setGameDataEdited(true)
+  };
 
   const handlePlayerScoresEdited = (edited: boolean, editedPlayerScores: PlayerScore[]) => {
     if (
@@ -135,13 +145,11 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
   const onClickSave = async () => {
     setLoading(true)
     setLoading(false)
-    // generate our update object based on changes so far
+    // need to leverage updated + new state to figure out what has changed
+    // so we can construct the payload to send to the server
 
   };
 
-  // need to display the main game metadata and allow relevant parts to be edited
-  // need to know when the data has been edited / have a handle for that -> things can be edited either at the game metadata or at the player score layer
-  // need to submit the edits to the API -> server side function
 
   return (
     <Box
@@ -164,7 +172,7 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
         />
       </Stack>
       {parsedScorecardResults && (
-        <Stack align='center' w="100%" maw={750}>
+        <Stack align='center' w="100%" maw={750} pb={{ base: 8, sm: 16, md: 24 }}>
           <BoardGameTrackerEditableGameData
             gameData={parsedGameData}
             handleGameDataEdited={handleGameDataEdited}

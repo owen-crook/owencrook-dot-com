@@ -24,9 +24,9 @@ export default function BoardGameTrackerEditableTable({
   handlePlayerScoresEdited,
 }: BoardGameTrackerEditableTableProps) {
   const [editablePlayerScores, setEditablePlayerScores] = useState<PlayerScore[]>(playerScores);
-  const [isAltered, setIsAltered] = useState(false);
   const [editingColumnId, setEditingColumnId] = useState<string | null>(null);
   const [tempColumnName, setTempColumnName] = useState<string>('');
+  const [isExpanded, setIsExpanded] = useState(true)
 
   // dynamic styling vars
   const tableMaxWidth = 750;
@@ -38,11 +38,8 @@ export default function BoardGameTrackerEditableTable({
   }, [playerScores]);
 
   useEffect(() => {
-    if (handlePlayerScoresEdited) {
-      console.log('fired handlePlayerScoresEdited(true)');
-      handlePlayerScoresEdited(true, editablePlayerScores);
-    }
-  }, [isAltered, handlePlayerScoresEdited, editablePlayerScores]);
+    handlePlayerScoresEdited(true, editablePlayerScores);
+  }, [handlePlayerScoresEdited, editablePlayerScores]);
 
   // parse out core items for dynamic table generation
   const playerCols = useMemo(
@@ -68,7 +65,6 @@ export default function BoardGameTrackerEditableTable({
       prevPlayerScores.map((prevPlayerScore) => {
         if (prevPlayerScore.id === playerId) {
           if (prevPlayerScore.name !== newName) {
-            setIsAltered(true);
             return { ...prevPlayerScore, name: newName };
           }
         }
@@ -84,9 +80,8 @@ export default function BoardGameTrackerEditableTable({
       setEditablePlayerScores((prevPlayerScores) =>
         prevPlayerScores.map((prevPlayerScore) => {
           if (prevPlayerScore.id === playerId) {
-            // Only update if the value has actually changed to avoid unnecessary re-renders and setting isAltered
+            // Only update if the value has actually changed to avoid unnecessary re-renders
             if (prevPlayerScore[category] !== parsedValue) {
-              setIsAltered(true);
               return {
                 ...prevPlayerScore,
                 [category]: parsedValue,
@@ -149,6 +144,8 @@ export default function BoardGameTrackerEditableTable({
                   }
                 }}
                 autoFocus
+                variant="filled"
+                size="sm"
               />
             ) : (
               <Group
@@ -263,7 +260,7 @@ export default function BoardGameTrackerEditableTable({
 
   return (
     <Paper w="100%" maw={tableMaxWidth} shadow="lg" p="md" radius="md" withBorder>
-      <Text size="md" fw={500} mb="sm">Scorecard</Text>
+      <Text size="lg" fw={500} mb="sm">Scorecard</Text>
       <ScrollArea w="100%" mah="100%" type="auto" offsetScrollbars>
         <Table striped highlightOnHover withTableBorder withColumnBorders verticalSpacing="sm">
           <Table.Thead>{tableHeaders}</Table.Thead>
