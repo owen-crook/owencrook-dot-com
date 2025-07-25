@@ -286,7 +286,9 @@ export default function BoardGameTrackerEditableTable({
 
   return (
     <Paper w="100%" maw={tableMaxWidth} shadow="lg" p="md" radius="md" withBorder>
-      <Text size="lg" fw={500} mb="sm">Scorecard</Text>
+      <Text size="lg" fw={500} mb="sm">
+        Scorecard
+      </Text>
       <ScrollArea w="100%" mah="100%" type="auto" offsetScrollbars>
         <Table striped highlightOnHover withTableBorder withColumnBorders verticalSpacing="sm">
           <Table.Thead>{tableHeaders}</Table.Thead>

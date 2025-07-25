@@ -11,9 +11,9 @@ export interface PlayerScore {
 }
 
 export interface GameMetadata {
-  id: string
-  game?: SupportedGames
-  date?: Date
-  isCompleted?: boolean
-  location?: string
+  id: string;
+  game?: SupportedGames;
+  date?: Date;
+  isCompleted?: boolean;
+  location?: string;
 }
