@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { IconCheck } from '@tabler/icons-react';
 import { Button, Container, Group, Image, List, Text, ThemeIcon, Title } from '@mantine/core';
 
@@ -31,24 +32,39 @@ export default function HomePage() {
             }
           >
             <List.Item>
-              <b>Natural tinkerer</b> – I'm happiest when I'm bringing ideas to life or figuring out
+              <b>Natural tinkerer</b> - I'm happiest when I'm bringing ideas to life or figuring out
               how things work
             </List.Item>
             <List.Item>
-              <b>Systems architect</b> – I enjoy creating the robust systems and tools that make
+              <b>Systems architect</b> - I enjoy creating the robust systems and tools that make
               technology run smoothly behind the scenes
             </List.Item>
             <List.Item>
-              <b>Curious explorer</b> – I love exploring new areas and finding ways to apply my
+              <b>Curious explorer</b> - I love exploring new areas and finding ways to apply my
               skills to solve problems
             </List.Item>
           </List>
 
           <Group mt={30}>
-            <Button radius="xl" size="md" className="control">
-              Get started
+            <Button
+              component={Link}
+              href="/professional-experience"
+              radius="xl"
+              size="md"
+              className="control"
+            >
+              My work
             </Button>
-            <Button variant="default" radius="xl" size="md" className="control">
+            <Button
+              component="a"
+              href="https://github.com/owen-crook/owencrook-dot-com"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="default"
+              radius="xl"
+              size="md"
+              className="control"
+            >
               Source code
             </Button>
           </Group>

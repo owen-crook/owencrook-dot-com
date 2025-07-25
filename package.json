@@ -36,7 +36,8 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "three": "^0.177.0",
-    "webpack": "^5.99.9"
+    "webpack": "^5.99.9",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
@@ -54,7 +55,8 @@
     "@types/jest": "^29.5.14",
     "@types/lodash.isequal": "^4.5.8",
     "@types/node": "^22.13.11",
-    "@types/react": "19.0.12",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
     "@types/three": "^0.176.0",
     "babel-loader": "^10.0.0",
     "eslint": "^9.23.0",

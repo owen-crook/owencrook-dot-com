@@ -1,12 +1,20 @@
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { IconChevronDown, IconUser } from '@tabler/icons-react';
+import { IconChevronDown, IconLock, IconUser } from '@tabler/icons-react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { ActionIcon, Avatar, Burger, Center, Container, Group, Menu, Tooltip } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from './Header.module.css';
 
-const links = [
+interface LinkItem {
+  link: string;
+  label: string;
+  links?: LinkItem[];
+  adminOnly?: boolean;
+}
+
+const links: LinkItem[] = [
   { link: '/', label: 'Home' },
   { link: '/professional-experience', label: 'Professional Experience' },
   {
@@ -17,7 +25,7 @@ const links = [
   {
     link: '/tools',
     label: 'Tools',
-    links: [{ link: '/board-game-tracker', label: 'Board Game Tracker' }],
+    links: [{ link: '/board-game-tracker', label: 'Board Game Tracker', adminOnly: true }],
   },
 ];
 
@@ -26,17 +34,47 @@ export function Header() {
   const pathname = usePathname();
   const { data: session } = useSession();
 
+  const adminEmails = (process.env.NEXT_PUBLIC_ADMIN_EMAILS ?? '')
+    .split(',')
+    .map((e) => e.trim())
+    .filter(Boolean);
+  const isAdmin = session?.user?.email && adminEmails.includes(session.user.email);
+
+  const renderLink = (linkObj: LinkItem) => {
+    const locked = linkObj.adminOnly && !isAdmin;
+    const content = (
+      <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+        {linkObj.label}
+        {locked && <IconLock size={14} style={{ marginLeft: 2 }} />}
+      </span>
+    );
+    if (locked) {
+      return (
+        <span
+          key={linkObj.label}
+          className={classes.link}
+          style={{ opacity: 0.5, cursor: 'not-allowed', pointerEvents: 'none' }}
+          title="Admin only"
+        >
+          {content}
+        </span>
+      );
+    }
+    return (
+      <Link
+        key={linkObj.label}
+        href={linkObj.link}
+        className={classes.link}
+        data-active={pathname === linkObj.link || undefined}
+      >
+        {content}
+      </Link>
+    );
+  };
+
   const items = links.map((link) => {
     const menuItems = link.links?.map((item) => (
-      <Menu.Item key={item.label}>
-        <Link
-          href={item.link}
-          className={classes.link}
-          data-active={pathname === item.link || undefined}
-        >
-          {item.label}
-        </Link>
-      </Menu.Item>
+      <Menu.Item key={item.label}>{renderLink(item)}</Menu.Item>
     ));
 
     if (menuItems) {
@@ -58,17 +96,7 @@ export function Header() {
         </Menu>
       );
     }
-
-    return (
-      <Link
-        key={link.label}
-        href={link.link}
-        className={classes.link}
-        data-active={pathname === link.link || undefined}
-      >
-        {link.label}
-      </Link>
-    );
+    return renderLink(link);
   });
 
   const authButton = (
