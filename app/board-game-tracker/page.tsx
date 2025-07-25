@@ -1,13 +1,20 @@
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
-import { Box } from '@mantine/core';
-import BoardGameTrackerUploadForm from '@/components/BoardgameTrackerUploadForm/BoardgameTrackerUploadForm';
-import { authOptions } from '@/lib/auth';
+import { authOptions } from '@/lib/auth'; // Ensure this path is correct
 
-export default async function BoardGameTrackerPage() {
-  // TODO: make this redirect nicer
+// Import your new Client Component
+import BoardGameTrackerClientPage from './BoardGameTrackerClientPage'; // You'll create this file
+
+export default async function BoardGameTrackerServerPage() {
   const session = await getServerSession(authOptions);
+  const token = session?.idToken;
+
+  // Server-side redirects
   if (!session?.user?.email) {
+    redirect('/');
+  }
+
+  if (!token) {
     redirect('/');
   }
 
@@ -17,20 +24,8 @@ export default async function BoardGameTrackerPage() {
     redirect('/');
   }
 
+  // Pass necessary props to the Client Component
   return (
-    <>
-      <Box style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <Box
-          pl={{ base: 8, sm: 16, md: 24 }}
-          pr={{ base: 8, sm: 16, md: 24 }}
-          pb={{ base: 8, sm: 16, md: 24 }}
-          style={{ flex: '0 0 auto' }}
-        >
-          <h1>Board Game Tracker</h1>
-          <p>Upload a photo from a supported game to parse its score!</p>
-          <BoardGameTrackerUploadForm />
-        </Box>
-      </Box>
-    </>
+    <BoardGameTrackerClientPage token={token} isAdmin={isAdmin} userEmail={session.user.email} />
   );
 }
