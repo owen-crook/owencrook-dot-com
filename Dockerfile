@@ -12,7 +12,6 @@ COPY yarn.lock ./
 COPY .yarn .yarn
 COPY .yarnrc.yml ./
 RUN corepack enable && yarn install --frozen-lockfile
-RUN ls -la /app && ls -la /app/node_modules
 
 # Rebuild the source code only when needed
 FROM base AS builder

@@ -26,20 +26,11 @@ export default function BoardGameTrackerEditableTable({
   const [editablePlayerScores, setEditablePlayerScores] = useState<PlayerScore[]>(playerScores);
   const [editingColumnId, setEditingColumnId] = useState<string | null>(null);
   const [tempColumnName, setTempColumnName] = useState<string>('');
-  const [isExpanded, setIsExpanded] = useState(true)
 
   // dynamic styling vars
   const tableMaxWidth = 750;
   const columnMaxWidth = 125;
   const columnMinWidth = 100;
-
-  useEffect(() => {
-    setEditablePlayerScores(playerScores);
-  }, [playerScores]);
-
-  useEffect(() => {
-    handlePlayerScoresEdited(true, editablePlayerScores);
-  }, [handlePlayerScoresEdited, editablePlayerScores]);
 
   // parse out core items for dynamic table generation
   const playerCols = useMemo(
@@ -52,6 +43,41 @@ export default function BoardGameTrackerEditableTable({
     const allKeys = Object.keys(editablePlayerScores[0]);
     return allKeys.filter((key) => key !== 'id' && key !== 'name' && key !== 'total');
   }, [editablePlayerScores]);
+
+  useEffect(() => {
+    setEditablePlayerScores(playerScores);
+  }, [playerScores]);
+
+  useEffect(() => {
+    handlePlayerScoresEdited(true, editablePlayerScores);
+  }, [handlePlayerScoresEdited, editablePlayerScores]);
+
+  useEffect(() => {
+    // Compute new scores with updated totals
+    const newScores = editablePlayerScores.map((player) => {
+      let total = 0;
+      categoryRows.forEach((category) => {
+        const value = player[category];
+        if (typeof value === 'number') {
+          total += value;
+        }
+      });
+      if (player.total !== total) {
+        return { ...player, total };
+      }
+      return player;
+    });
+
+    // Only update state if something actually changed
+    const changed =
+      newScores.length !== editablePlayerScores.length ||
+      newScores.some((p, i) => p.total !== editablePlayerScores[i].total);
+
+    if (changed) {
+      setEditablePlayerScores(newScores);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categoryRows, editablePlayerScores]);
 
   const handlePlayerNameChange = useCallback((playerId: string, newName: string) => {
     // handle empty string

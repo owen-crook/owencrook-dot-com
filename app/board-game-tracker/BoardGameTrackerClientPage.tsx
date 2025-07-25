@@ -10,6 +10,7 @@ import { GameMetadata, PlayerScore, SupportedGames } from '@/components/BoardGam
 import {
   patchBoardGameTrackerUpdateScoreCard,
   postBoardGameTrackerParseScoreCard,
+  UpdateScoreCardProps,
 } from '@/lib/actions/board-game-tracker';
 
 interface BoardGameTrackerClientPageProps {
@@ -22,10 +23,10 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(true);
   const [parsedScorecardResults, setParsedScorecardresults] = useState<any>(null);
-  const [parsedGameData, setParsedGameData] = useState<GameMetadata>({ id: 'unknown' })
+  const [parsedGameData, setParsedGameData] = useState<GameMetadata | undefined>(undefined)
   const [parsedPlayerScores, setParsedPlayerScores] = useState<PlayerScore[]>([]);
   const [gameDataEdited, setGameDataEdited] = useState(false);
-  const [updatedGameData, setUpdatedGameData] = useState<GameMetadata>({ id: 'unknown' })
+  const [updatedGameData, setUpdatedGameData] = useState<GameMetadata | undefined>(undefined)
   const [playerScoresEdited, setPlayerScoresEdited] = useState(false);
   const [updatedPlayerScores, setUpdatedPlayerScores] = useState<PlayerScore[]>([]);
   const [saveButtonEnabled, setSaveButtonEnabled] = useState(false);
@@ -37,7 +38,7 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
       return
     }
     //handle game data
-    var gameData: GameMetadata
+    var gameData: GameMetadata | undefined
     // id should be a uuid and always present, not rendered
     if ('id' in parsedScorecardResults) {
       gameData = {
@@ -71,11 +72,10 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
         gameData['location'] = parsedScorecardResults['location']
       }
     } else {
-      gameData = {
-        id: 'unknown'
-      }
+      gameData = undefined
     }
     setParsedGameData(gameData)
+    setUpdatedGameData(gameData)
     // handle player scores
     if (
       'player_scores' in parsedScorecardResults &&
@@ -134,7 +134,6 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
     });
     if (data.success) {
       setParsedScorecardresults(data.data);
-      console.log(data.data);
     } else {
       // TODO: better hanle these errors
       console.error(data.error);
@@ -144,12 +143,69 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
 
   const onClickSave = async () => {
     setLoading(true)
-    setLoading(false)
-    // need to leverage updated + new state to figure out what has changed
-    // so we can construct the payload to send to the server
+    if (!updatedGameData || updatedGameData.id === 'unknown') {
+      console.error('No valid game data to save');
+      setLoading(false);
+      return;
+    }
+    if (!parsedGameData || parsedGameData.id === 'unknown') {
+      console.error('No valid parsed game data to compare against');
+      setLoading(false);
+      return;
+    }
+    var edited = false
+    var d: UpdateScoreCardProps = {
+      token: token,
+      documentId: updatedGameData.id,
+    }
+    if (updatedGameData.game !== undefined && updatedGameData.game !== parsedGameData.game) {
+      d['game'] = updatedGameData.game
+      edited = true
+    }
+    if (updatedGameData.date !== undefined && updatedGameData.date !== parsedGameData.date) {
+      d['date'] = updatedGameData.date
+      edited = true
+    }
+    if (updatedGameData.isCompleted !== undefined && updatedGameData.isCompleted !== parsedGameData.isCompleted) {
+      d['isCompleted'] = updatedGameData.isCompleted
+      edited = true
+    }
+    if (updatedGameData.location !== undefined && updatedGameData.location !== parsedGameData.location) {
+      d['location'] = updatedGameData.location
+      edited = true
+    }
+    if (updatedPlayerScores !== undefined &&
+      updatedPlayerScores.length > 0 &&
+      !isEqual(updatedPlayerScores, parsedPlayerScores)) {
+      d['playerScores'] = updatedPlayerScores;
+      edited = true
+    }
 
+    if (!edited) {
+      setLoading(false);
+      return;
+    }
+
+    const data = await patchBoardGameTrackerUpdateScoreCard(d)
+    if (!data.success) {
+      // TODO: better hanle these errors
+      console.error(data.error);
+    } else {
+      // update state to reflect the newly saved data
+      var newParsedScorecardResults = {
+        ...updatedGameData,
+        is_completed: updatedGameData.isCompleted || false,
+        player_scores: updatedPlayerScores && updatedPlayerScores.length > 0
+          ? updatedPlayerScores
+          : parsedPlayerScores
+      }
+      setParsedScorecardresults(newParsedScorecardResults);
+      // reset the edited state
+      setGameDataEdited(false)
+      setPlayerScoresEdited(false);
+    }
+    setLoading(false);
   };
-
 
   return (
     <Box
@@ -171,7 +227,7 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
           onFormSubmission={onFormSubmission}
         />
       </Stack>
-      {parsedScorecardResults && (
+      {parsedScorecardResults && parsedGameData && (
         <Stack align='center' w="100%" maw={750} pb={{ base: 8, sm: 16, md: 24 }}>
           <BoardGameTrackerEditableGameData
             gameData={parsedGameData}

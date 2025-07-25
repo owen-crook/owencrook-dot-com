@@ -1,25 +1,24 @@
 'use server';
 
 import dayjs from 'dayjs';
-import { PlayerScore, SupportedGames } from '@/components/BoardGameTrackerScoreCardUpload/types';
+import {PlayerScore, SupportedGames} from '@/components/BoardGameTrackerScoreCardUpload/types';
 
 // TODO: alter API_BASE_URL value based on ENV
 const API_BASE_URL = 'https://api.owencrook.com/api/v1/board-game-tracker';
 
-type ServerActionResult<T> =
-  | {
-      success: true;
-      data: T;
-      message?: string;
-    }
-  | {
-      success: false;
-      error: string;
-      details?: any;
-      message?: string;
-    };
+type ServerActionResult<T> =|{
+  success: true;
+  data: T;
+  message?: string;
+}
+|{
+  success: false;
+  error: string;
+  details?: any;
+  message?: string;
+};
 
-interface ParseScoreCardProps {
+export interface ParseScoreCardProps {
   file: File;
   date: Date;
   game: string;
@@ -32,6 +31,8 @@ export async function postBoardGameTrackerParseScoreCard({
   game,
   token,
 }: ParseScoreCardProps): Promise<ServerActionResult<any>> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 60000);  // 15s
   try {
     const formData = new FormData();
     formData.append('image', file);
@@ -45,7 +46,10 @@ export async function postBoardGameTrackerParseScoreCard({
       method: 'POST',
       headers: headers,
       body: formData,
+      signal: controller.signal,
     });
+
+    clearTimeout(timeout)
 
     if (response.ok) {
       const data = await response.json();
@@ -53,22 +57,28 @@ export async function postBoardGameTrackerParseScoreCard({
         success: true,
         data: data,
       };
-    } else {
+    }
+    else {
       const err = await response.json();
+      console.log(err)
       return {
         success: false,
         error: err.error,
       };
     }
   } catch (error) {
+    console.log(error)
     return {
       success: false,
       error: (error as Error).message || 'Internal Server Error',
     };
+  } finally {
+    // Ensure timeout is cleared even if there's an error before fetch completes
+    clearTimeout(timeout);
   }
 }
 
-interface UpdateScoreCardProps {
+export interface UpdateScoreCardProps {
   documentId: string;
   token: string;
   game?: SupportedGames;
@@ -97,7 +107,7 @@ export async function patchBoardGameTrackerUpdateScoreCard({
   }
   if (date !== undefined) {
     anyModified = true;
-    payload['date'] = date; // TODO: unify date formats on client (API is using YYYY-MM-DD)
+    payload['date'] = date;
   }
   if (isCompleted !== undefined) {
     anyModified = true;
@@ -119,30 +129,45 @@ export async function patchBoardGameTrackerUpdateScoreCard({
   }
 
   // make request
-  const headers = { Authorization: `Bearer ${token}` };
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 60000);  // 15s
+
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  };
   try {
-    const response = await fetch(`${API_BASE_URL}/update-score-card/${documentId}`, {
-      method: 'PATCH',
-      headers: headers,
-      body: JSON.stringify(payload),
-    });
+    const response =
+        await fetch(`${API_BASE_URL}/update-score-card/${documentId}`, {
+          method: 'PATCH',
+          headers: headers,
+          body: JSON.stringify(payload),
+        });
+
+    clearTimeout(timeout)
+
     if (response.ok) {
       const data = await response.json();
       return {
         success: true,
         data: data,
       };
-    } else {
+    }
+    else {
       const err = await response.json();
+      console.log(err)
       return {
         success: false,
         error: err.error,
       };
     }
   } catch (error) {
+    console.log(error)
     return {
       success: false,
       error: (error as Error).message || 'Internal Server Error',
     };
+  } finally {
+    clearTimeout(timeout)
   }
 }
