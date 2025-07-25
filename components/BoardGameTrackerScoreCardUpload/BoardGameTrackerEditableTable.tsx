@@ -39,7 +39,9 @@ export default function BoardGameTrackerEditableTable({
     [editablePlayerScores]
   );
   const categoryRows = useMemo(() => {
-    if (editablePlayerScores.length === 0) return [];
+    if (editablePlayerScores.length === 0) {
+      return [];
+    }
     const allKeys = Object.keys(editablePlayerScores[0]);
     return allKeys.filter((key) => key !== 'id' && key !== 'name' && key !== 'total');
   }, [editablePlayerScores]);
@@ -76,7 +78,6 @@ export default function BoardGameTrackerEditableTable({
     if (changed) {
       setEditablePlayerScores(newScores);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryRows, editablePlayerScores]);
 
   const handlePlayerNameChange = useCallback((playerId: string, newName: string) => {
@@ -156,7 +157,7 @@ export default function BoardGameTrackerEditableTable({
           backgroundColor: 'var(--mantine-color-body)',
         }}
       />
-      {playerCols.map((playerCol, index) => {
+      {playerCols.map((playerCol) => {
         return (
           <Table.Th key={playerCol.id} maw={columnMaxWidth} miw={columnMinWidth} align="center">
             {editingColumnId === playerCol.id ? (

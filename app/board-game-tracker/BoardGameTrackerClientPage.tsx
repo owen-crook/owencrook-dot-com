@@ -41,38 +41,38 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
       return;
     }
     //handle game data
-    var gameData: GameMetadata | undefined;
+    let gameData: GameMetadata | undefined;
     // id should be a uuid and always present, not rendered
     if ('id' in parsedScorecardResults) {
       gameData = {
-        id: String(parsedScorecardResults['id']),
+        id: String(parsedScorecardResults.id),
       };
       // game should be a lowercase SupportedGame, will be rendered as drop down
       if ('game' in parsedScorecardResults) {
         const supportedGameType = Object.values(SupportedGames).find((enumValue) => {
-          return enumValue.toLowerCase() === parsedScorecardResults['game'].toLowerCase();
+          return enumValue.toLowerCase() === parsedScorecardResults.game.toLowerCase();
         });
         if (supportedGameType) {
-          gameData['game'] = supportedGameType;
+          gameData.game = supportedGameType;
         }
       }
       // date should be a string with the format 2025-07-12T00:00:00Z, will be rendered as datepicker
       if ('date' in parsedScorecardResults) {
         // lazily assume API is right format, but still make sure valid date
-        const parsedDate = new Date(parsedScorecardResults['date']);
+        const parsedDate = new Date(parsedScorecardResults.date);
         if (!isNaN(parsedDate.getTime())) {
-          gameData['date'] = parsedDate;
+          gameData.date = parsedDate;
         }
       }
       // is_completed should be a boolean, will be rendered as a slider
       if ('is_completed' in parsedScorecardResults) {
-        if (typeof parsedScorecardResults['is_completed'] === 'boolean') {
-          gameData['isCompleted'] = parsedScorecardResults['is_completed'];
+        if (typeof parsedScorecardResults.is_completed === 'boolean') {
+          gameData.isCompleted = parsedScorecardResults.is_completed;
         }
       }
       // location should be a string, will be rendered as text input
       if ('location' in parsedScorecardResults) {
-        gameData['location'] = parsedScorecardResults['location'];
+        gameData.location = parsedScorecardResults.location;
       }
     } else {
       gameData = undefined;
@@ -82,11 +82,11 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
     // handle player scores
     if (
       'player_scores' in parsedScorecardResults &&
-      Array.isArray(parsedScorecardResults['player_scores'])
+      Array.isArray(parsedScorecardResults.player_scores)
     ) {
       setParsedPlayerScores(
-        parsedScorecardResults['player_scores'].map((item) => {
-          return item as PlayerScore;
+        parsedScorecardResults.player_scores.map((item: PlayerScore) => {
+          return item;
         })
       );
     }
@@ -127,10 +127,10 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
     setShowForm(false);
     setLoading(true);
     const data = await postBoardGameTrackerParseScoreCard({
-      token: token,
-      file: file,
-      date: date,
+      file,
+      date,
       game: game.valueOf().toLowerCase(),
+      token,
     });
     if (data.success) {
       setParsedScorecardresults(data.data);
@@ -153,31 +153,31 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
       setLoading(false);
       return;
     }
-    var edited = false;
-    var d: UpdateScoreCardProps = {
-      token: token,
+    let edited = false;
+    const d: UpdateScoreCardProps = {
+      token,
       documentId: updatedGameData.id,
     };
     if (updatedGameData.game !== undefined && updatedGameData.game !== parsedGameData.game) {
-      d['game'] = updatedGameData.game;
+      d.game = updatedGameData.game;
       edited = true;
     }
     if (updatedGameData.date !== undefined && updatedGameData.date !== parsedGameData.date) {
-      d['date'] = updatedGameData.date;
+      d.date = updatedGameData.date;
       edited = true;
     }
     if (
       updatedGameData.isCompleted !== undefined &&
       updatedGameData.isCompleted !== parsedGameData.isCompleted
     ) {
-      d['isCompleted'] = updatedGameData.isCompleted;
+      d.isCompleted = updatedGameData.isCompleted;
       edited = true;
     }
     if (
       updatedGameData.location !== undefined &&
       updatedGameData.location !== parsedGameData.location
     ) {
-      d['location'] = updatedGameData.location;
+      d.location = updatedGameData.location;
       edited = true;
     }
     if (
@@ -185,7 +185,7 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
       updatedPlayerScores.length > 0 &&
       !isEqual(updatedPlayerScores, parsedPlayerScores)
     ) {
-      d['playerScores'] = updatedPlayerScores;
+      d.playerScores = updatedPlayerScores;
       edited = true;
     }
 
@@ -200,7 +200,7 @@ export default function BoardGameTrackerClientPage({ token }: BoardGameTrackerCl
       console.error(data.error);
     } else {
       // update state to reflect the newly saved data
-      var newParsedScorecardResults = {
+      const newParsedScorecardResults = {
         ...updatedGameData,
         is_completed: updatedGameData.isCompleted || false,
         player_scores:

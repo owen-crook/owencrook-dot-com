@@ -45,7 +45,7 @@ export async function postBoardGameTrackerParseScoreCard({
 
     const response = await fetch(`${API_BASE_URL}/parse-score-card/${game}`, {
       method: 'POST',
-      headers: headers,
+      headers,
       body: formData,
       signal: controller.signal,
     });
@@ -56,16 +56,15 @@ export async function postBoardGameTrackerParseScoreCard({
       const data = await response.json();
       return {
         success: true,
-        data: data,
-      };
-    } else {
-      const err = await response.json();
-      console.log(err);
-      return {
-        success: false,
-        error: err.error,
+        data,
       };
     }
+    const err = await response.json();
+    console.log(err);
+    return {
+      success: false,
+      error: err.error,
+    };
   } catch (error) {
     console.log(error);
     return {
@@ -100,26 +99,26 @@ export async function patchBoardGameTrackerUpdateScoreCard({
   // serialize the fields, if they exist
   let anyModified: boolean = false;
   const payload: Record<string, any> = {};
-  payload['id'] = documentId;
+  payload.id = documentId;
   if (game !== undefined) {
     anyModified = true;
-    payload['game'] = game.valueOf().toLowerCase();
+    payload.game = game.valueOf().toLowerCase();
   }
   if (date !== undefined) {
     anyModified = true;
-    payload['date'] = date;
+    payload.date = date;
   }
   if (isCompleted !== undefined) {
     anyModified = true;
-    payload['is_completed'] = isCompleted;
+    payload.is_completed = isCompleted;
   }
   if (location !== undefined) {
     anyModified = true;
-    payload['location'] = location;
+    payload.location = location;
   }
   if (playerScores !== undefined) {
     anyModified = true;
-    payload['player_scores'] = playerScores;
+    payload.player_scores = playerScores;
   }
   if (!anyModified) {
     return {
@@ -139,7 +138,7 @@ export async function patchBoardGameTrackerUpdateScoreCard({
   try {
     const response = await fetch(`${API_BASE_URL}/update-score-card/${documentId}`, {
       method: 'PATCH',
-      headers: headers,
+      headers,
       body: JSON.stringify(payload),
     });
 
@@ -149,16 +148,15 @@ export async function patchBoardGameTrackerUpdateScoreCard({
       const data = await response.json();
       return {
         success: true,
-        data: data,
-      };
-    } else {
-      const err = await response.json();
-      console.log(err);
-      return {
-        success: false,
-        error: err.error,
+        data,
       };
     }
+    const err = await response.json();
+    console.log(err);
+    return {
+      success: false,
+      error: err.error,
+    };
   } catch (error) {
     console.log(error);
     return {
