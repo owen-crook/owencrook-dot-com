@@ -1,11 +1,25 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { IconChevronDown, IconLock, IconUser } from '@tabler/icons-react';
+import { IconChevronDown, IconLock, IconUser, IconX } from '@tabler/icons-react';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { ActionIcon, Avatar, Burger, Center, Container, Group, Menu, Tooltip } from '@mantine/core';
+import {
+  ActionIcon,
+  Avatar,
+  Box,
+  Burger,
+  Center,
+  Collapse,
+  Container,
+  Divider,
+  Drawer,
+  Group,
+  Menu,
+  Stack,
+  Text,
+  Tooltip,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import classes from './Header.module.css';
 
 interface LinkItem {
   link: string;
@@ -30,7 +44,8 @@ const links: LinkItem[] = [
 ];
 
 export function Header() {
-  const [opened, { toggle }] = useDisclosure(false);
+  const [opened, { toggle, close }] = useDisclosure(false);
+  const [expandedMenu, setExpandedMenu] = React.useState<string | null>(null);
   const pathname = usePathname();
   const { data: session } = useSession();
 
@@ -40,63 +55,164 @@ export function Header() {
     .filter(Boolean);
   const isAdmin = session?.user?.email && adminEmails.includes(session.user.email);
 
-  const renderLink = (linkObj: LinkItem) => {
+  const linkStyles = {
+    display: 'block',
+    lineHeight: 1,
+    padding: '8px 12px',
+    borderRadius: 'var(--mantine-radius-sm)',
+    textDecoration: 'none',
+    color: 'light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0))',
+    fontSize: 'var(--mantine-font-size-sm)',
+    fontWeight: 500,
+    transition: 'background-color 0.2s ease',
+    '&:hover': {
+      backgroundColor: 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))',
+    },
+  };
+
+  const activeLinkStyles = {
+    backgroundColor: 'var(--mantine-color-blue-filled)',
+    color: 'var(--mantine-color-white)',
+    '&:hover': {
+      backgroundColor: 'var(--mantine-color-blue-filled)',
+    },
+  };
+
+  const renderLink = (linkObj: LinkItem, isMobile = false) => {
     const locked = linkObj.adminOnly && !isAdmin;
+    const isActive = pathname === linkObj.link;
+
     const content = (
       <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
         {linkObj.label}
         {locked && <IconLock size={14} style={{ marginLeft: 2 }} />}
       </span>
     );
+
+    // Mobile-specific styles - just better padding and contained width
+    const mobileStyles = isMobile
+      ? {
+          padding: '12px 16px',
+          borderRadius: 'var(--mantine-radius-md)',
+          width: '100%',
+          maxWidth: '280px',
+        }
+      : {};
+
     if (locked) {
       return (
-        <span
+        <Box
           key={linkObj.label}
-          className={classes.link}
-          style={{ opacity: 0.5, cursor: 'not-allowed', pointerEvents: 'none' }}
+          component="span"
+          style={{
+            ...linkStyles,
+            ...mobileStyles,
+            opacity: 0.5,
+            cursor: 'not-allowed',
+            pointerEvents: 'none',
+          }}
           title="Admin only"
         >
           {content}
-        </span>
+        </Box>
       );
     }
+
     return (
-      <Link
+      <Box
         key={linkObj.label}
+        component={Link}
         href={linkObj.link}
-        className={classes.link}
-        data-active={pathname === linkObj.link || undefined}
+        style={{
+          ...linkStyles,
+          ...mobileStyles,
+          ...(isActive && activeLinkStyles),
+        }}
+        onClick={isMobile ? close : undefined}
       >
         {content}
-      </Link>
+      </Box>
     );
   };
 
-  const items = links.map((link) => {
+  const renderMobileSubMenu = (parentLink: LinkItem) => {
+    const isExpanded = expandedMenu === parentLink.label;
+
+    return (
+      <Box key={parentLink.label}>
+        <Box
+          component="button"
+          style={{
+            ...linkStyles,
+            padding: '12px 16px',
+            borderRadius: 'var(--mantine-radius-md)',
+            background: 'none',
+            border: 'none',
+            width: '100%',
+            maxWidth: '280px',
+            textAlign: 'left',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+          onClick={() => setExpandedMenu(isExpanded ? null : parentLink.label)}
+        >
+          <span>{parentLink.label}</span>
+          <IconChevronDown
+            size={14}
+            style={{
+              transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.2s ease',
+            }}
+          />
+        </Box>
+        <Collapse in={isExpanded}>
+          <Stack gap="xs" pl="xl">
+            {parentLink.links?.map((item) => renderLink(item, true))}
+          </Stack>
+        </Collapse>
+      </Box>
+    );
+  };
+
+  // Desktop menu items
+  const desktopItems = links.map((link) => {
     const menuItems = link.links?.map((item) => (
-      <Menu.Item key={item.label}>{renderLink(item)}</Menu.Item>
+      <Menu.Item key={item.label} p={0}>
+        {renderLink(item)}
+      </Menu.Item>
     ));
 
     if (menuItems) {
       return (
         <Menu key={link.label} trigger="hover" transitionProps={{ exitDuration: 0 }} withinPortal>
           <Menu.Target>
-            <a
+            <Box
+              component="a"
               href={link.link}
-              className={classes.link}
+              style={linkStyles}
               onClick={(event) => event.preventDefault()}
             >
               <Center>
-                <span className={classes.linkLabel}>{link.label}</span>
+                <span>{link.label}</span>
                 <IconChevronDown size={14} stroke={1.5} />
               </Center>
-            </a>
+            </Box>
           </Menu.Target>
           <Menu.Dropdown>{menuItems}</Menu.Dropdown>
         </Menu>
       );
     }
     return renderLink(link);
+  });
+
+  // Mobile menu items
+  const mobileItems = links.map((link) => {
+    if (link.links) {
+      return renderMobileSubMenu(link);
+    }
+    return renderLink(link, true);
   });
 
   const authButton = (
@@ -126,19 +242,117 @@ export function Header() {
   );
 
   return (
-    <header className={classes.header}>
-      <Container size="md" className={classes.inner}>
-        <Group justify="space-between" align="center" h={56} style={{ width: '100%' }}>
-          <Group gap={5} align="center">
-            <Group gap={5} visibleFrom="sm" align="center">
-              {items}
+    <>
+      <Box
+        component="header"
+        style={{
+          height: 56,
+          marginBottom: 120,
+          backgroundColor: 'var(--mantine-color-body)',
+          borderBottom:
+            '1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4))',
+        }}
+      >
+        <Container size="md" h={56}>
+          <Group justify="space-between" align="center" h="100%">
+            <Group gap={5} align="center">
+              <Group gap={5} visibleFrom="sm" align="center">
+                {desktopItems}
+              </Group>
+              <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="sm" />
             </Group>
-            {/* TODO (OC-): add in mobile menu*/}
-            <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="sm" />
+
+            {/* Logo/Initials - visible on mobile only */}
+            <Group gap={1} align="center" hiddenFrom="sm">
+              <Text size="xl" fw={500} c="dark.9">
+                O
+              </Text>
+              <Text size="xl" fw={300} c="gray.6" style={{ lineHeight: 1 }}>
+                |
+              </Text>{' '}
+              {/* Slim, light separator */}
+              <Text size="xl" fw={500} c="dark.9">
+                C
+              </Text>
+            </Group>
+            {authButton}
           </Group>
-          {authButton}
-        </Group>
-      </Container>
-    </header>
+        </Container>
+      </Box>
+
+      {/* Mobile Navigation Drawer */}
+      <Drawer
+        opened={opened}
+        onClose={close}
+        size="xs"
+        padding="md"
+        hiddenFrom="sm"
+        position="left"
+        zIndex={1000}
+        title={
+          <Text size="lg" fw={600}>
+            Navigation
+          </Text>
+        }
+        closeButtonProps={{
+          icon: <IconX size={18} />,
+        }}
+      >
+        <Stack gap="xs">
+          {mobileItems}
+          <Divider my="md" />
+          <Box>
+            {session ? (
+              <Stack gap="xs">
+                <Text size="sm" c="dimmed">
+                  Signed in as {session.user?.name}
+                </Text>
+                <Box
+                  component="button"
+                  style={{
+                    ...linkStyles,
+                    padding: '12px 16px',
+                    borderRadius: 'var(--mantine-radius-md)',
+                    background: 'none',
+                    border: 'none',
+                    width: '100%',
+                    maxWidth: '280px',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => {
+                    signOut({ callbackUrl: '/' });
+                    close();
+                  }}
+                >
+                  Sign out
+                </Box>
+              </Stack>
+            ) : (
+              <Box
+                component="button"
+                style={{
+                  ...linkStyles,
+                  padding: '12px 16px',
+                  borderRadius: 'var(--mantine-radius-md)',
+                  background: 'none',
+                  border: 'none',
+                  width: '100%',
+                  maxWidth: '280px',
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  signIn('google');
+                  close();
+                }}
+              >
+                Sign in with Google
+              </Box>
+            )}
+          </Box>
+        </Stack>
+      </Drawer>
+    </>
   );
 }
